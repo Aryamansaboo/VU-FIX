@@ -1,411 +1,822 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Where Did My Complaint Go? — Hostel Maintenance Transparency</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VUFIX — Hostel Maintenance & Complaint Transparency Portal | Vijaybhoomi University</title>
+  
+  <!-- FontAwesome 6 Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- VUFIX Custom CSS Design System -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<nav class="sitenav">
-  <a href="#top">Home</a>
-  <a href="#phase1">Phase 1 · Empathy</a>
-  <a href="#phase2">Phase 2 · Ideate &amp; Evaluate</a>
-  <a href="#phase3">Phase 3 · Prioritization</a>
-</nav>
+<div id="app">
+  <!-- Top Navigation Header -->
+  <header class="vufix-nav">
+    <div class="nav-container">
+      <a href="#" class="brand-logo" id="btn-brand-home">
+        <div class="logo-badge">VX</div>
+        <div class="logo-text">
+          <h1>VUFIX</h1>
+          <p>Vijaybhoomi Maintenance Portal</p>
+        </div>
+      </a>
 
-<header id="top" class="hero">
-  <p class="eyebrow">UX Research &amp; Information Architecture — Midterm Submission</p>
-  <h1>Where Did My Complaint Go?</h1>
-  <p class="hero-sub">Designing transparency into the hostel maintenance complaint process</p>
-  <p class="byline">Aryaman Saboo · Vijaybhoomi University · August 2026</p>
+      <div class="nav-actions">
+        <!-- Quick Profile Switcher Dropdown -->
+        <div class="preset-switcher-dropdown">
+          <button class="btn-preset-selector" id="btn-user-dropdown" title="Switch User Profile">
+            <div class="user-avatar-badge" id="nav-user-avatar">AS</div>
+            <span id="nav-user-name">Aryaman Saboo</span>
+            <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem;"></i>
+          </button>
 
-  <div class="problem-box">
-    <h2>The Broken Experience</h2>
-    <p>Hostel students lack transparency about what happens to their maintenance complaints after submission — making it difficult for them to know whether the complaint has been received, who is handling it, and what progress has been made toward its resolution.</p>
-  </div>
-</header>
-
-<main>
-
-<!-- ============ PHASE 1 ============ -->
-<section id="phase1" class="phase">
-  <div class="phase-label">Phase 1</div>
-  <h2 class="phase-title">Empathy &amp; Definition</h2>
-
-  <article class="block">
-    <h3>1.1 — The Problem Space</h3>
-    <p>I picked this problem because I've filed enough hostel complaints myself to know the feeling of typing a message into a group chat and then just... waiting, with no idea if anyone even saw it. Most hostels don't lack a way to <em>file</em> a complaint — there's a register, a WhatsApp group, or a basic form. What's missing is everything that happens <em>after</em> that: an acknowledgment, a status, an owner, a timeline. The complaint goes into a system I can't see into, and the only way to get information back out is to physically go and ask someone. That gap — not the repair itself — is what I'm trying to fix here.</p>
-  </article>
-
-  <article class="block">
-    <h3>1.2 — Proto-Persona <span class="tag tag-assumed">before research</span></h3>
-    <div class="card proto">
-      <h4>"Rohan" — the assumed frustrated resident</h4>
-      <ul>
-        <li>Cares mainly about repair <strong>speed</strong> — the faster the fix, the happier he is</li>
-        <li>Files a complaint and mostly forgets about it until it's fixed</li>
-        <li>Doesn't care who fixes it or when, as long as it eventually happens</li>
-        <li>Complains rarely — treats it as a one-off inconvenience, not a recurring frustration</li>
-      </ul>
-    </div>
-    <p class="callout-note">This was my assumption going in — I sketched this proto-persona from gut instinct before talking to anyone, mostly based on my own experience. Then I tested it against three real interviews, and it turned out to be wrong on almost every point.</p>
-  </article>
-
-  <article class="block">
-    <h3>1.3 — Talking to Real Residents</h3>
-    <p>I ran three short, semi-structured interviews (15–20 minutes each) with residents from different hostel blocks and years, each of whom had filed a maintenance complaint in the last month. Three people is a small sample, I know — but all three converged on the same complaint almost immediately, which is what convinced me this wasn't a one-off.</p>
-
-    <div class="interview-grid">
-      <div class="interview-card">
-        <h4>Ananya · 2nd Year, B.Des</h4>
-        <p class="meta">Girls Hostel, Block C — AC/fan complaint</p>
-        <p>"I submitted it three days ago, nobody's come. Is anyone even looking at this?"</p>
-      </div>
-      <div class="interview-card">
-        <h4>Karan · 3rd Year, Engineering</h4>
-        <p class="meta">Boys Hostel, Block A — electrical complaint, followed up 3 times</p>
-        <p>"I've messaged the group three times now. I feel like I'm being that annoying guy, but what choice do I have?"</p>
-      </div>
-      <div class="interview-card">
-        <h4>Devansh · 1st Year</h4>
-        <p class="meta">Boys Hostel, Block B — leaking tap, gave up following up</p>
-        <p>"After a week I just stopped asking. I figured either someone would come or they wouldn't."</p>
-      </div>
-    </div>
-
-    <p><strong>What I expected vs. what I heard:</strong></p>
-    <table class="compare-table">
-      <thead><tr><th>Proto-persona assumption</th><th>What real interviews showed</th></tr></thead>
-      <tbody>
-        <tr><td>Cares mainly about repair speed</td><td>Cares more about <em>knowing what's happening</em> than about raw speed — a slow but visible process was described as "fine," a fast but silent one was not</td></tr>
-        <tr><td>Forgets about the complaint after filing it</td><td>Actively and repeatedly checks for updates — WhatsApp, in person, through blockmates</td></tr>
-        <tr><td>Doesn't care who fixes it</td><td>Wants to know <em>someone specific</em> is responsible — accountability reduces anxiety</td></tr>
-        <tr><td>Complains rarely, treats it as one-off</td><td>A bad experience makes residents <strong>under-report</strong> future problems — "I'll just live with it" (Devansh)</td></tr>
-      </tbody>
-    </table>
-  </article>
-
-  <article class="block">
-    <h3>1.4 — User Persona <span class="tag tag-real">from real data</span></h3>
-    <div class="persona-card">
-      <div class="persona-avatar" aria-hidden="true">AS</div>
-      <div class="persona-body">
-        <h4>Ananya Sharma</h4>
-        <p class="meta">20 · 2nd Year, B.Des · Girls Hostel Block C, Room 214</p>
-        <p class="persona-quote">"I just want to know someone's actually looking at it."</p>
-        <div class="persona-cols">
-          <div>
-            <h5>Goals</h5>
-            <ul>
-              <li>Get maintenance issues fixed without repeated manual follow-up</li>
-              <li>Know her complaint was received and is being taken seriously</li>
-            </ul>
-          </div>
-          <div>
-            <h5>Frustrations</h5>
-            <ul>
-              <li>Complaints feel like they "disappear into a black hole"</li>
-              <li>Following up repeatedly feels awkward and confrontational</li>
-              <li>No way to tell if a delay is normal or if she's been forgotten</li>
-            </ul>
+          <div class="preset-menu" id="user-preset-menu">
+            <div class="preset-menu-header">Quick Switch Preset Profile</div>
+            <button class="preset-option" data-userid="usr_aryaman">
+              <div class="user-avatar-badge" style="background: linear-gradient(135deg, #6366f1, #06b6d4);">AS</div>
+              <div class="preset-opt-details">
+                <strong>Aryaman Saboo (Student)</strong>
+                <span>Hostel A, Room B3-304</span>
+              </div>
+            </button>
+            <button class="preset-option" data-userid="usr_parth">
+              <div class="user-avatar-badge" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);">PP</div>
+              <div class="preset-opt-details">
+                <strong>Parth Pawar (Student)</strong>
+                <span>Hostel A, Room A1-101</span>
+              </div>
+            </button>
+            <button class="preset-option" data-userid="usr_rinu">
+              <div class="user-avatar-badge" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">RB</div>
+              <div class="preset-opt-details">
+                <strong>Rinu Babu (Hostel Warden)</strong>
+                <span>ADM-WARDEN-01</span>
+              </div>
+            </button>
+            <div style="border-top: 1px solid var(--border-subtle); margin-top: 0.35rem; padding-top: 0.35rem;">
+              <button class="preset-option" id="btn-nav-logout" style="color: var(--accent-rose);">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <strong>Log Out Session</strong>
+              </button>
+            </div>
           </div>
         </div>
-        <p class="persona-tech">Comfortable with apps and daily digital tools — the friction isn't technical literacy, it's that the current process (register / WhatsApp group) has no visibility built in at all.</p>
+
+        <!-- Notification Bell Icon -->
+        <button class="btn-icon-nav" id="btn-notifications" title="Notifications">
+          <i class="fa-regular fa-bell"></i>
+          <span class="notif-badge" id="notif-unread-dot" style="display: none;"></span>
+        </button>
+
+        <!-- UX Research Toggle Button -->
+        <button class="btn-outline-sm" id="btn-toggle-research">
+          <i class="fa-solid fa-file-contract"></i>
+          <span>UX Research</span>
+        </button>
       </div>
     </div>
-  </article>
+  </header>
 
-  <article class="block">
-    <h3>1.5 — Empathy Map</h3>
-    <p>Built directly from the interview notes above — not from assumptions.</p>
-    <figure class="diagram">
-      <img src="images/empathy-map.png" alt="Empathy map for Ananya, a hostel resident, divided into four quadrants. Says: quotes about not knowing if her complaint was seen and not wanting to seem rude by following up again. Thinks: worries that her complaint was lost or forgotten, and that she has no way to know what is happening behind the scenes. Does: repeatedly checks the hostel WhatsApp group, walks to the warden's office in person, asks blockmates about their complaints, and re-submits after a week of silence. Feels: anxious, ignored like the complaint disappeared into a black hole, mildly resentful toward hostel admin, and reluctant to bother staff again.">
-      <figcaption>Empathy Map — Ananya, hostel resident. Synthesized from 3 resident interviews.</figcaption>
-    </figure>
-  </article>
+  <!-- Main View Router Container -->
+  <main class="main-view-container">
 
-  <article class="block">
-    <h3>1.6 — User Journey Map</h3>
-    <p><strong>Scenario:</strong> Ananya's ceiling fan stops working during peak summer. She files a complaint and needs it fixed — and wants to know what's happening while she waits.</p>
-    <figure class="diagram">
-      <img src="images/journey-map.png" alt="User journey map plotting Ananya's emotional state across seven stages of reporting a broken fan: Notices Problem (slightly negative), Submits Complaint (neutral, hopeful), Day 1 Waits (slightly negative), Day 3 Follows Up (lowest point, strongly negative — 'is anyone even looking at this'), Day 5 Escalates in person (still negative but improving), Day 7 Fan Fixed (positive relief, but no acknowledgment it was scheduled), and Reflects afterward (back to neutral, with a resolve to under-report future issues). The lowest dip on Day 3 is called out as the core pain point: zero visibility between submitting a complaint and it being resolved, forcing manual follow-up.">
-      <figcaption>User Journey Map — "My fan just stopped working, mid-summer." Emotion line from Frustrated (-2) to Delighted (+2) across a 7-day resolution window.</figcaption>
-    </figure>
-  </article>
+    <!-- ==========================================================================
+         VIEW 1: FRETBOX-INSPIRED TABBED AUTHENTICATION HUB
+         ========================================================================== -->
+    <section id="view-auth" class="auth-hero-wrapper" style="display: none;">
+      <div class="auth-header-card">
+        <div class="auth-brand-icon">
+          <i class="fa-solid fa-screwdriver-wrench"></i>
+        </div>
+        <h2>Welcome to VUFIX</h2>
+        <p>Transparent Hostel Maintenance & Complaint Management System for Vijaybhoomi University</p>
+      </div>
 
-  <article class="block">
-    <h3>1.7 — The Core Pain Point</h3>
-    <div class="pain-point">
-      <p>The lowest point on the emotion line is <strong>Day 3 — Follow Up</strong>, when a second message gets no clear answer either way. That dip isn't really about the broken fan. It's about the silence.</p>
-      <p class="pain-statement">Between submitting a complaint and it being resolved, hostel residents have <strong>zero visibility</strong> — no acknowledgment, no status, no named owner, no timeline. That absence of information forces residents into repeated, awkward manual follow-ups, and over time, teaches them not to bother reporting at all.</p>
+      <!-- Quick Fill Demo Preset Box -->
+      <div class="quick-demo-container">
+        <div class="quick-demo-title">
+          <i class="fa-solid fa-bolt"></i>
+          <span>One-Click Demo Quick Fill Profiles</span>
+        </div>
+        <div class="quick-preset-btns">
+          <button class="btn-preset-quick" data-demo="usr_aryaman">
+            <div>
+              <strong>⚡ Quick Fill Primary Student (Aryaman Saboo)</strong>
+              <span>ST20230042 • Room B3-304</span>
+            </div>
+            <span class="preset-chip">Student</span>
+          </button>
+          <button class="btn-preset-quick" data-demo="usr_rinu">
+            <div>
+              <strong>🛡️ Quick Fill Hostel Warden (Rinu Babu)</strong>
+              <span>ADM-WARDEN-01 • Hostel Warden</span>
+            </div>
+            <span class="preset-chip" style="background: rgba(245, 158, 11, 0.2); color: var(--accent-amber);">Warden</span>
+          </button>
+          <button class="btn-preset-quick" data-demo="usr_parth">
+            <div>
+              <strong>👤 Quick Fill Student (Parth Pawar)</strong>
+              <span>ST20230088 • Room A1-101</span>
+            </div>
+            <span class="preset-chip">Student</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Switcher -->
+      <div class="glass-card">
+        <div class="auth-tabs">
+          <button class="auth-tab-btn active" data-tab="student-login">Student Login</button>
+          <button class="auth-tab-btn" data-tab="student-signup">Student Sign Up</button>
+          <button class="auth-tab-btn" data-tab="warden-login">Warden / Admin</button>
+        </div>
+
+        <!-- Student Login Form -->
+        <form id="form-student-login" class="auth-form">
+          <div class="form-group">
+            <label for="login-email">Email or Roll Number</label>
+            <input type="text" id="login-email" class="form-control" placeholder="e.g. aryaman.saboo@vijaybhoomi.edu.in or ST20230042" required value="aryaman.saboo@vijaybhoomi.edu.in">
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" class="form-control" placeholder="••••••••" required value="password123">
+          </div>
+          <button type="submit" class="btn-submit-primary">
+            <span>Login as Student</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </form>
+
+        <!-- Student Sign Up Form -->
+        <form id="form-student-signup" class="auth-form" style="display: none;">
+          <div class="form-group">
+            <label for="signup-name">Full Name</label>
+            <input type="text" id="signup-name" class="form-control" placeholder="e.g. Ananya Sharma" required>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="signup-roll">Roll Number</label>
+              <input type="text" id="signup-roll" class="form-control" placeholder="ST20230099" required>
+            </div>
+            <div class="form-group">
+              <label for="signup-email">University Email</label>
+              <input type="email" id="signup-email" class="form-control" placeholder="name@vijaybhoomi.edu.in" required>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="signup-hostel">Hostel Block</label>
+              <select id="signup-hostel" class="form-control">
+                <option value="Hostel A">Hostel A</option>
+                <option value="Hostel B">Hostel B</option>
+                <option value="Girls Hostel C">Girls Hostel C</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="signup-room">Room Number</label>
+              <input type="text" id="signup-room" class="form-control" placeholder="B3-304" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="signup-password">Create Password</label>
+            <input type="password" id="signup-password" class="form-control" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn-submit-primary">
+            <span>Register & Log In</span>
+            <i class="fa-solid fa-user-plus"></i>
+          </button>
+        </form>
+
+        <!-- Warden / Admin Login Form -->
+        <form id="form-warden-login" class="auth-form" style="display: none;">
+          <div class="form-group">
+            <label for="warden-admin-id">Admin ID or Email</label>
+            <input type="text" id="warden-admin-id" class="form-control" placeholder="ADM-WARDEN-01 or rinu.babu@vijaybhoomi.edu.in" required value="rinu.babu@vijaybhoomi.edu.in">
+          </div>
+          <div class="form-group">
+            <label for="warden-password">Admin Access Password</label>
+            <input type="password" id="warden-password" class="form-control" placeholder="••••••••" required value="admin123">
+          </div>
+          <button type="submit" class="btn-submit-primary" style="background: linear-gradient(135deg, var(--accent-amber), var(--accent-rose));">
+            <span>Login to Warden Dashboard</span>
+            <i class="fa-solid fa-shield-halved"></i>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         VIEW 2: STUDENT MAINTENANCE PORTAL
+         ========================================================================== -->
+    <section id="view-student" style="display: none;">
+      <!-- Greeting & Info Header -->
+      <div class="student-portal-header">
+        <div class="welcome-title-group">
+          <h2>Welcome back, <span id="student-display-name">Aryaman Saboo</span> 👋</h2>
+          <div class="user-badges-row">
+            <div class="meta-badge">
+              <i class="fa-solid fa-id-card"></i>
+              <span id="student-badge-roll">ST20230042</span>
+            </div>
+            <div class="meta-badge">
+              <i class="fa-solid fa-bed"></i>
+              <span id="student-badge-room">Hostel A, Block B3, Room B3-304</span>
+            </div>
+            <div class="meta-badge">
+              <i class="fa-solid fa-envelope"></i>
+              <span id="student-badge-email">aryaman.saboo@vijaybhoomi.edu.in</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-cta-create" id="btn-open-complaint-wizard">
+          <i class="fa-solid fa-plus"></i>
+          <span>File New Complaint</span>
+        </button>
+      </div>
+
+      <!-- Summary Stat Cards -->
+      <div class="stats-cards-grid">
+        <div class="stat-card" style="--stat-color: var(--primary-500);">
+          <div class="stat-icon-wrapper">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <div class="stat-info">
+            <h4>Active Requests</h4>
+            <div class="stat-value" id="stat-student-active">2</div>
+          </div>
+        </div>
+
+        <div class="stat-card" style="--stat-color: var(--accent-emerald);">
+          <div class="stat-icon-wrapper">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div class="stat-info">
+            <h4>Resolved Issues</h4>
+            <div class="stat-value" id="stat-student-resolved">2</div>
+          </div>
+        </div>
+
+        <div class="stat-card" style="--stat-color: var(--accent-rose);">
+          <div class="stat-icon-wrapper">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <div class="stat-info">
+            <h4>Escalated Tickets</h4>
+            <div class="stat-value" id="stat-student-escalated">0</div>
+          </div>
+        </div>
+
+        <div class="stat-card" style="--stat-color: var(--accent-cyan);">
+          <div class="stat-icon-wrapper">
+            <i class="fa-solid fa-stopwatch"></i>
+          </div>
+          <div class="stat-info">
+            <h4>Avg. Response</h4>
+            <div class="stat-value">4.2h</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Toolbar & Filters -->
+      <div class="section-toolbar">
+        <div class="section-title">
+          <i class="fa-solid fa-list-check" style="color: var(--primary-400);"></i>
+          <span>My Maintenance Complaints</span>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+          <div class="filter-pills-bar" id="student-filter-pills">
+            <button class="btn-filter-pill active" data-filter="all">All</button>
+            <button class="btn-filter-pill" data-filter="pending">Pending</button>
+            <button class="btn-filter-pill" data-filter="in_progress">In Progress</button>
+            <button class="btn-filter-pill" data-filter="escalated">🚨 Escalated</button>
+            <button class="btn-filter-pill" data-filter="resolved">Resolved</button>
+          </div>
+
+          <div class="search-input-wrapper">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="search-student-complaints" class="form-control" placeholder="Search ticket # or title...">
+          </div>
+        </div>
+      </div>
+
+      <!-- Complaints List Grid -->
+      <div class="complaints-list-grid" id="student-complaints-list">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         VIEW 3: HOSTEL WARDEN MANAGEMENT PORTAL
+         ========================================================================== -->
+    <section id="view-warden" style="display: none;">
+      <div class="warden-overview-header">
+        <h2>Hostel Warden Control Center 🛡️</h2>
+        <p style="color: var(--text-muted); font-size: 0.92rem;">
+          Hostel Maintenance Administration Dashboard • Logged in as <strong>Rinu Babu (Warden)</strong>
+        </p>
+      </div>
+
+      <!-- Admin Overview Stats -->
+      <div class="stats-cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+        <div class="stat-card" style="--stat-color: var(--primary-500);">
+          <div class="stat-icon-wrapper"><i class="fa-solid fa-boxes-stacked"></i></div>
+          <div class="stat-info">
+            <h4>Total Filed</h4>
+            <div class="stat-value" id="stat-warden-total">5</div>
+          </div>
+        </div>
+
+        <div class="stat-card" style="--stat-color: var(--accent-cyan);">
+          <div class="stat-icon-wrapper"><i class="fa-solid fa-hourglass-half"></i></div>
+          <div class="stat-info">
+            <h4>Pending Review</h4>
+            <div class="stat-value" id="stat-warden-pending">1</div>
+          </div>
+        </div>
+
+        <div class="stat-card" style="--stat-color: var(--accent-purple);">
+          <div class="stat-icon-wrapper"><i class="fa-solid fa-gears"></i></div>
+          <div class="stat-info">
+            <h4>In Progress</h4>
+            <div class="stat-value" id="stat-warden-progress">2</div>
+          </div>
+        </div>
+
+        <div class="stat-card" style="--stat-color: var(--accent-rose);">
+          <div class="stat-icon-wrapper"><i class="fa-solid fa-circle-exclamation"></i></div>
+          <div class="stat-info">
+            <h4>Urgent Escalations</h4>
+            <div class="stat-value" id="stat-warden-escalated">1</div>
+          </div>
+        </div>
+
+        <div class="stat-card" style="--stat-color: var(--accent-emerald);">
+          <div class="stat-icon-wrapper"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="stat-info">
+            <h4>Resolved Today</h4>
+            <div class="stat-value" id="stat-warden-resolved">2</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Urgent Escalations Banner -->
+      <div class="urgent-escalations-banner" id="urgent-escalations-banner">
+        <div class="urgent-banner-header">
+          <div class="urgent-banner-title">
+            <i class="fa-solid fa-bell-triangle-exclamation"></i>
+            <span>Urgent Student Escalations Requiring Immediate Action</span>
+          </div>
+          <span class="preset-chip" style="background: rgba(244, 63, 94, 0.3); color: var(--accent-rose);">High Visibility</span>
+        </div>
+
+        <div class="urgent-tickets-list" id="urgent-tickets-list-container">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Filter Controls & Search -->
+      <div class="warden-controls-bar">
+        <div class="warden-filters-group">
+          <div class="filter-pills-bar" id="warden-filter-pills">
+            <button class="btn-filter-pill active" data-wardenfilter="all">All</button>
+            <button class="btn-filter-pill" data-wardenfilter="pending">Pending</button>
+            <button class="btn-filter-pill" data-wardenfilter="in_progress">In Progress</button>
+            <button class="btn-filter-pill" data-wardenfilter="escalated">🚨 Escalated</button>
+            <button class="btn-filter-pill" data-wardenfilter="resolved">Resolved</button>
+          </div>
+
+          <select id="filter-warden-category" class="select-control">
+            <option value="all">All Categories</option>
+            <option value="Electrical">Electrical</option>
+            <option value="Plumbing">Plumbing</option>
+            <option value="Carpentry / Furniture">Carpentry / Furniture</option>
+            <option value="Housekeeping / Cleanliness">Housekeeping</option>
+            <option value="IT / Network">IT / Network</option>
+          </select>
+
+          <select id="filter-warden-hostel" class="select-control">
+            <option value="all">All Hostel Blocks</option>
+            <option value="Block B3">Block B3</option>
+            <option value="Block A1">Block A1</option>
+            <option value="Girls Hostel C">Girls Hostel C</option>
+          </select>
+        </div>
+
+        <div class="search-input-wrapper">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="search-warden-complaints" class="form-control" placeholder="Search student, room, or ticket...">
+        </div>
+      </div>
+
+      <!-- Tickets Table View -->
+      <div class="tickets-table-wrapper">
+        <table class="vufix-table">
+          <thead>
+            <tr>
+              <th>Ticket ID</th>
+              <th>Student & Room</th>
+              <th>Category & Title</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Assigned Tech</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="warden-table-body">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ==========================================================================
+     MODAL DIALOGS
+     ========================================================================== -->
+
+<!-- 1. GUIDED 3-STEP COMPLAINT SUBMISSION WIZARD MODAL -->
+<div class="modal-backdrop" id="modal-complaint-wizard">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="fa-solid fa-plus-circle" style="color: var(--primary-400);"></i>
+        <span>File Maintenance Complaint</span>
+      </div>
+      <button class="btn-close-modal" class="close-wizard">&times;</button>
     </div>
-  </article>
 
-  <article class="block">
-    <h3>1.8 — User Stories</h3>
-    <div class="story-grid">
-      <div class="story-card">
-        <p><strong>As a</strong> hostel resident, <strong>I want</strong> an instant acknowledgment when I submit a complaint, <strong>so that</strong> I know it actually reached maintenance staff and wasn't lost.</p>
+    <div class="modal-body">
+      <!-- Wizard Progress Header -->
+      <div class="wizard-stepper-header">
+        <div class="wizard-step-node active" id="node-step-1">1</div>
+        <div class="wizard-step-node" id="node-step-2">2</div>
+        <div class="wizard-step-node" id="node-step-3">3</div>
       </div>
-      <div class="story-card">
-        <p><strong>As a</strong> hostel resident, <strong>I want</strong> to see my complaint's current status (Received / Assigned / In Progress / Resolved), <strong>so that</strong> I don't have to track down the warden in person just to ask.</p>
+
+      <!-- Step 1: Category & Priority -->
+      <div id="wizard-step-1-content">
+        <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem;">Step 1: Select Complaint Category</h4>
+        <div class="category-selection-grid">
+          <div class="category-option-card selected" data-cat="Electrical">
+            <i class="fa-solid fa-bolt"></i>
+            <h4>Electrical</h4>
+            <p style="font-size: 0.72rem; color: var(--text-muted);">Fan, Light, Socket, AC</p>
+          </div>
+          <div class="category-option-card" data-cat="Plumbing">
+            <i class="fa-solid fa-faucet-drip"></i>
+            <h4>Plumbing</h4>
+            <p style="font-size: 0.72rem; color: var(--text-muted);">Tap, Sink, Shower, Drain</p>
+          </div>
+          <div class="category-option-card" data-cat="Carpentry / Furniture">
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+            <h4>Carpentry</h4>
+            <p style="font-size: 0.72rem; color: var(--text-muted);">Bed, Desk, Door, Lock</p>
+          </div>
+          <div class="category-option-card" data-cat="Housekeeping / Cleanliness">
+            <i class="fa-solid fa-broom"></i>
+            <h4>Housekeeping</h4>
+            <p style="font-size: 0.72rem; color: var(--text-muted);">Cleaning, Pest Control</p>
+          </div>
+          <div class="category-option-card" data-cat="IT / Network">
+            <i class="fa-solid fa-wifi"></i>
+            <h4>IT / Network</h4>
+            <p style="font-size: 0.72rem; color: var(--text-muted);">Wi-Fi, LAN, Portal</p>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 1rem;">
+          <label>Urgency Priority Level</label>
+          <div class="priority-options-row">
+            <button class="priority-radio-btn" data-val="Low">Low (72h SLA)</button>
+            <button class="priority-radio-btn selected" data-val="Medium">Medium (48h)</button>
+            <button class="priority-radio-btn" data-val="High">High (24h)</button>
+            <button class="priority-radio-btn" data-val="Critical">Critical (Immediate)</button>
+          </div>
+        </div>
       </div>
-      <div class="story-card">
-        <p><strong>As a</strong> hostel resident, <strong>I want</strong> to know who is handling my complaint and roughly when, <strong>so that</strong> I can plan around the disruption instead of guessing.</p>
+
+      <!-- Step 2: Details & Preferred Slot -->
+      <div id="wizard-step-2-content" style="display: none;">
+        <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem;">Step 2: Enter Issue Details</h4>
+        <div class="form-group">
+          <label for="wiz-title">Issue Summary / Title</label>
+          <input type="text" id="wiz-title" class="form-control" placeholder="e.g. Ceiling fan grinding noise when speed > 2" required>
+        </div>
+
+        <div class="form-group">
+          <label for="wiz-description">Detailed Description & Instructions</label>
+          <textarea id="wiz-description" class="form-control" rows="3" placeholder="Provide details such as room area, symptoms, or specific instructions for technician..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="wiz-slot">Preferred Technician Visit Time Slot</label>
+          <select id="wiz-slot" class="form-control">
+            <option value="Morning (9:00 AM - 12:00 PM)">Morning (9:00 AM - 12:00 PM)</option>
+            <option value="Afternoon (12:00 PM - 4:00 PM)">Afternoon (12:00 PM - 4:00 PM)</option>
+            <option value="Evening (4:00 PM - 8:00 PM)">Evening (4:00 PM - 8:00 PM)</option>
+            <option value="Any Time">Any Time (As Soon As Available)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Photo Attachment (Optional Mock Uploader)</label>
+          <div class="photo-uploader-box" id="wiz-photo-box">
+            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.5rem; color: var(--primary-400); margin-bottom: 0.35rem;"></i>
+            <p style="font-size: 0.82rem; color: var(--text-muted);">Click to attach sample photo or drag image file here</p>
+            <div class="sample-photo-pickers">
+              <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=100&auto=format&fit=crop&q=60" class="sample-img-thumb selected" data-url="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500&auto=format&fit=crop&q=60" title="Fan / Electrical">
+              <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=100&auto=format&fit=crop&q=60" class="sample-img-thumb" data-url="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=500&auto=format&fit=crop&q=60" title="Plumbing Sink">
+              <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=100&auto=format&fit=crop&q=60" class="sample-img-thumb" data-url="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=500&auto=format&fit=crop&q=60" title="Router / IT">
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="story-card">
-        <p><strong>As a</strong> hostel resident, <strong>I want</strong> to be notified the moment my complaint's status changes, <strong>so that</strong> I don't have to keep checking manually to find out.</p>
-      </div>
-    </div>
-  </article>
-</section>
 
-<!-- ============ PHASE 2 ============ -->
-<section id="phase2" class="phase">
-  <div class="phase-label">Phase 2</div>
-  <h2 class="phase-title">Ideate &amp; Evaluate</h2>
-
-  <article class="block">
-    <h3>2.1 — From Stories to Features</h3>
-    <p>The four user stories above were expanded into a broader list of everything the product might plausibly need — features and content items, not yet organized into any structure.</p>
-  </article>
-
-  <article class="block">
-    <h3>2.2 — Feature &amp; Content Inventory (20 items)</h3>
-    <ol class="feature-list">
-      <li>Submit New Complaint</li>
-      <li>Select Complaint Category (Electrical / Plumbing / Carpentry / Internet / Cleaning / Other)</li>
-      <li>Attach Photo / Video Evidence</li>
-      <li>Auto-fill Room &amp; Block Number</li>
-      <li>Instant Submission Confirmation</li>
-      <li>Unique Complaint ID / Tracking Number</li>
-      <li>Live Status Tracker (Received → Assigned → In Progress → Resolved)</li>
-      <li>Assigned Technician Name &amp; Contact</li>
-      <li>Estimated Resolution Time</li>
-      <li>Push / SMS Notification on Status Change</li>
-      <li>In-App Comment Thread with Maintenance Staff</li>
-      <li>My Complaint History (Past &amp; Active)</li>
-      <li>Escalate a Delayed Complaint</li>
-      <li>Rate &amp; Give Feedback After Resolution</li>
-      <li>Mark as Urgent / Priority Flag</li>
-      <li>Reopen a "Resolved" Complaint</li>
-      <li>Hostel-wide Maintenance Announcements</li>
-      <li>FAQ / Self-Help for Common Issues</li>
-      <li>Complaint Analytics (e.g. average resolution time for my hostel)</li>
-      <li>"Others Reported This Too" Alert for Similar Nearby Complaints</li>
-    </ol>
-  </article>
-
-  <article class="block">
-    <h3>2.3 — Card Sort</h3>
-    <p><strong>Method:</strong> Hybrid card sort — 12 hostel residents, physical index cards for all 20 items above, and four starter categories (<em>Complaints, Track &amp; Status, History, Help</em>) that participants were free to rename, merge, split, or ignore in favor of their own groupings.</p>
-
-    <h4>Patterns I found</h4>
-    <ul class="pattern-list">
-      <li><strong>Strong agreement (10+/12):</strong> Items 1–6 (submit, category, photo, room auto-fill, confirmation, ID) consistently grouped under a "New / Submit a Complaint" category.</li>
-      <li><strong>Strong agreement (11/12):</strong> Items 7–11 (status tracker, technician, ETA, notifications, comment thread) were grouped together — and most participants independently created a category literally called <em>"Track"</em> or <em>"Status."</em> Nobody nested these inside a general "history" or "account" bucket.</li>
-      <li><strong>Moderate agreement (8/12):</strong> Items 12, 13, 15, 16 (history, escalate, urgent flag, reopen) clustered under "My Complaints," though 4 participants placed "Escalate" with Track instead.</li>
-      <li><strong>Split decision:</strong> Item 14 (Rate &amp; Feedback) — 6 participants put it with Track/Resolved, 6 put it with History. No majority pattern.</li>
-      <li><strong>Weak/inconsistent agreement:</strong> Items 17, 19, 20 (announcements, analytics, "others reported this too") were placed inconsistently — several participants said these felt unnecessary or unclear, and two invented a new bucket, "Hostel Updates," for them.</li>
-      <li><strong>Strong agreement (10/12):</strong> Item 18 (FAQ) consistently grouped under "Help."</li>
-    </ul>
-
-    <div class="callout-insight">
-      <strong>Key insight:</strong> Residents want <em>Track / Status</em> to be its own first-class, top-level destination — not something buried inside a general history or account section. This directly matches the core pain point from Phase 1: the need for status to be visible, not archived.
-    </div>
-  </article>
-
-  <article class="block">
-    <h3>2.4 — V1 Information Architecture</h3>
-    <p>Built directly from the card sort patterns above — five top-level categories, with "Track My Complaints" kept as its own first-class destination rather than folded into history.</p>
-    <figure class="diagram">
-      <img src="images/ia-tree.png" alt="V1 information architecture tree for the hostel complaint app. Root: Home. Five top-level branches: Submit a Complaint (Select Category, Attach Photo/Video, Room/Block auto-filled, Mark Urgent), Track My Complaints — highlighted with a red outline and marked with an asterisk as a card-sort insight — (Live Status Tracker, Assigned Technician, Estimated Time, Comment Thread), My History (Past Complaints, Escalate Delayed, Reopen Resolved, Rate and Feedback), Hostel Updates (Maintenance Announcements, Similar Complaints Nearby), and Help (FAQ, Complaint Analytics).">
-      <figcaption>V1 IA tree, built from a 12-resident hybrid card sort.</figcaption>
-    </figure>
-  </article>
-
-  <article class="block">
-    <h3>2.5 — Tree Test</h3>
-    <p><strong>Method:</strong> I tested the V1 tree above with 6 hostel residents (none of whom took part in the card sort), giving each a task and asking them to say, out loud, which path they'd follow to complete it. Six is on the smaller side for a tree test, but both failures below showed up almost immediately and repeated across multiple participants, which is usually the sign you've found a real structural problem rather than noise.</p>
-
-    <h4>Scenario 1</h4>
-    <p class="scenario-text">"Your ceiling fan stopped working. You submitted the complaint two days ago. You want to find out who's fixing it and when it'll be done. Where would you look?"</p>
-    <p><strong>Target destination:</strong> Track My Complaints → Live Status Tracker / Assigned Technician</p>
-    <p><strong>Result:</strong> 4 of 6 succeeded directly. 2 of 6 first clicked into <em>My History</em>, expecting their active complaint to live there, before backtracking after ~10–15 seconds.</p>
-
-    <h4>Scenario 2</h4>
-    <p class="scenario-text">"You want to check if anyone else in your block also complained about the water heater. Where would you look?"</p>
-    <p><strong>Target destination:</strong> Hostel Updates → Similar Complaints Nearby</p>
-    <p><strong>Result:</strong> Only 1 of 6 found it there. 3 of 6 looked inside Track My Complaints; 2 of 6 looked inside My History. Nobody thought to check "Hostel Updates" first.</p>
-
-    <table class="compare-table">
-      <thead><tr><th>Where users failed</th><th>Why</th><th>How I fixed the IA</th></tr></thead>
-      <tbody>
-        <tr>
-          <td>Scenario 1 — 2/6 looked in "My History" instead of "Track My Complaints"</td>
-          <td>Residents don't mentally separate "my active complaint" from "my complaint history" — to them it's one list of complaints in different states, not two destinations</td>
-          <td>Merged <em>Track My Complaints</em> and <em>My History</em> into one top-level <strong>"My Complaints"</strong> section, split internally into Active / Past tabs</td>
-        </tr>
-        <tr>
-          <td>Scenario 2 — 5/6 failed to find "Similar Complaints Nearby" under Hostel Updates</td>
-          <td>Users associate "similar complaints" with the complaint they're already tracking, not with general hostel-wide announcements — it was filed under the wrong mental model entirely</td>
-          <td>Moved <em>Similar Complaints</em> out of Hostel Updates and into the individual complaint's status screen, as related, contextual info</td>
-        </tr>
-      </tbody>
-    </table>
-  </article>
-
-  <article class="block">
-    <h3>2.6 — V2 Information Architecture (revised)</h3>
-    <div class="ia-tree ia-tree-v2">
-      <ul>
-        <li>Home
-          <ul>
-            <li>Submit a Complaint
-              <ul>
-                <li>Select Category</li>
-                <li>Attach Photo / Video</li>
-                <li>Room / Block (auto-filled)</li>
-                <li>Mark Urgent</li>
-              </ul>
-            </li>
-            <li class="changed">My Complaints <span class="tag tag-changed">merged</span>
-              <ul>
-                <li>Active
-                  <ul>
-                    <li>Live Status Tracker</li>
-                    <li>Assigned Technician</li>
-                    <li>Estimated Resolution Time</li>
-                    <li>Comment Thread</li>
-                    <li class="changed">Similar Complaints Nearby <span class="tag tag-changed">moved here</span></li>
-                    <li>Escalate a Delayed Complaint</li>
-                  </ul>
-                </li>
-                <li>Past
-                  <ul>
-                    <li>Resolved Complaints</li>
-                    <li>Reopen a Resolved Complaint</li>
-                    <li>Rate &amp; Feedback</li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-            <li>Hostel Updates
-              <ul>
-                <li>Maintenance Announcements</li>
-              </ul>
-            </li>
-            <li>Help
-              <ul>
-                <li>FAQ</li>
-                <li>Complaint Analytics</li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-  </article>
-</section>
-
-<!-- ============ PHASE 3 ============ -->
-<section id="phase3" class="phase">
-  <div class="phase-label">Phase 3</div>
-  <h2 class="phase-title">Prioritization</h2>
-
-  <article class="block">
-    <h3>3.1 — MoSCoW: What Actually Ships in v1</h3>
-    <p>Budget is tight, and the brief allows exactly four Must-Haves. Everything is sorted against one test: <em>does this directly close the visibility gap from the core pain point, or is it secondary?</em></p>
-
-    <div class="moscow-grid">
-      <div class="moscow-col must">
-        <h4>Must-Have <span class="count">4 / 4</span></h4>
-        <ul>
-          <li>Submit a Complaint (category + photo)<span class="why">The front door — nothing else works without it</span></li>
-          <li>Live Status Tracker<span class="why">Directly solves the core pain point</span></li>
-          <li>Instant Confirmation + Unique Complaint ID<span class="why">The first trust signal — "did it even go through?"</span></li>
-          <li>Push Notification on Status Change<span class="why">Closes the loop without forcing manual checking</span></li>
-        </ul>
-      </div>
-      <div class="moscow-col should">
-        <h4>Should-Have</h4>
-        <ul>
-          <li>My Complaints History (Past)</li>
-          <li>In-App Comment Thread with Staff</li>
-          <li>Escalate a Delayed Complaint</li>
-          <li>Assigned Technician Name &amp; Contact</li>
-        </ul>
-      </div>
-      <div class="moscow-col could">
-        <h4>Could-Have</h4>
-        <ul>
-          <li>Rate &amp; Feedback</li>
-          <li>Reopen a Resolved Complaint</li>
-          <li>Complaint Analytics</li>
-          <li>Hostel-wide Announcements</li>
-          <li>Mark as Urgent / Priority Flag</li>
-        </ul>
-      </div>
-      <div class="moscow-col wont">
-        <h4>Won't-Have (v1)</h4>
-        <ul>
-          <li>Similar Complaints Nearby Alert</li>
-          <li>FAQ / Self-Help</li>
-          <li>Admin / warden dashboard</li>
-        </ul>
+      <!-- Step 3: Review & Submit -->
+      <div id="wizard-step-3-content" style="display: none;">
+        <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem;">Step 3: Review Complaint Summary</h4>
+        <div class="glass-card" style="background: rgba(15, 23, 42, 0.7); margin-bottom: 1rem;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="font-size: 0.78rem; color: var(--text-subtle);">CATEGORY</span>
+            <strong id="summary-category" style="color: var(--primary-400);">Electrical</strong>
+          </div>
+          <div style="display: justify; margin-bottom: 0.5rem;">
+            <span style="font-size: 0.78rem; color: var(--text-subtle);">PRIORITY</span>
+            <span id="summary-priority" class="priority-badge medium">Medium</span>
+          </div>
+          <div style="margin-bottom: 0.5rem;">
+            <span style="font-size: 0.78rem; color: var(--text-subtle); display: block;">TITLE</span>
+            <strong id="summary-title" style="font-size: 0.95rem;">-</strong>
+          </div>
+          <div style="margin-bottom: 0.5rem;">
+            <span style="font-size: 0.78rem; color: var(--text-subtle); display: block;">LOCATION</span>
+            <span id="summary-location" style="font-size: 0.85rem; color: var(--text-muted);">-</span>
+          </div>
+          <div>
+            <span style="font-size: 0.78rem; color: var(--text-subtle); display: block;">PREFERRED SLOT</span>
+            <span id="summary-slot" style="font-size: 0.85rem; color: var(--accent-cyan);">-</span>
+          </div>
+        </div>
       </div>
     </div>
-  </article>
 
-  <article class="block">
-    <h3>3.2 — The Hardest Debate</h3>
-    <p>Two features both directly attack the core pain point, and both made a real case for the last Must-Have slot: <strong>Push Notification on Status Change</strong> and <strong>Assigned Technician Name &amp; Contact</strong>. I genuinely went back and forth on this one — so instead of picking by gut feeling, I ran them through a DFV Matrix.</p>
-  </article>
-
-  <article class="block">
-    <h3>3.3 — DFV Matrix</h3>
-    <table class="dfv-table">
-      <thead>
-        <tr><th>Feature</th><th>Desirability</th><th>Feasibility</th><th>Viability</th><th>Total</th></tr>
-      </thead>
-      <tbody>
-        <tr class="winner">
-          <td class="feature-name">Push Notification on Status Change</td>
-          <td><span class="score">5</span><span class="reason">Every interviewee independently said some version of "just tell me, don't make me check"</span></td>
-          <td><span class="score">4</span><span class="reason">Standard push/SMS pattern, well understood, moderate integration effort</span></td>
-          <td><span class="score">4</span><span class="reason">Cuts down admin foot-traffic and repeat questions — real staff-time savings, low ongoing cost</span></td>
-          <td class="total">13<span class="of">/15</span></td>
-        </tr>
-        <tr>
-          <td class="feature-name">Assigned Technician Name &amp; Contact</td>
-          <td><span class="score">4</span><span class="reason">Valued, but secondary in interviews — "I mostly just want to know it's moving"</span></td>
-          <td><span class="score">3</span><span class="reason">Depends on staff-assignment data being entered accurately every time — fragile at MVP stage</span></td>
-          <td><span class="score">3</span><span class="reason">Raises a privacy question (exposing staff contact info to students) that needs a policy decision first</span></td>
-          <td class="total">10<span class="of">/15</span></td>
-        </tr>
-      </tbody>
-    </table>
-    <p class="dfv-verdict"><strong>Push Notification on Status Change</strong> wins, 13 to 10, and takes the fourth Must-Have slot. Assigned Technician stays a strong Should-Have for v1.1, once the staff-assignment data pipeline and the privacy question are sorted out.</p>
-  </article>
-
-  <article class="block">
-    <h3>3.4 — The MVP</h3>
-    <div class="mvp-summary">
-      <p>What actually ships in v1: a resident can <strong>submit</strong> a complaint with a category and photo, get an <strong>instant confirmation</strong> with a tracking ID, watch a <strong>live status tracker</strong> move from Received to Resolved, and get a <strong>push notification</strong> the moment anything changes — without ever having to walk to the warden's office to ask "any update?"</p>
-      <p>None of this makes repairs happen faster. It just makes the waiting bearable, which — based on everything in Phase 1 — is what was actually broken.</p>
+    <div class="modal-footer">
+      <button class="btn-outline-sm" id="btn-wiz-prev" style="display: none;">Back</button>
+      <button class="btn-submit-primary" id="btn-wiz-next" style="width: auto; padding: 0.55rem 1.25rem;">
+        <span>Continue</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
     </div>
-  </article>
+  </div>
+</div>
 
-</section>
+<!-- 2. LIVE STEPPER TIMELINE MODAL -->
+<div class="modal-backdrop" id="modal-timeline">
+  <div class="modal-dialog" style="max-width: 600px;">
+    <div class="modal-header timeline-modal-header">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span class="ticket-id-tag" id="timeline-ticket-id">TKT-2026-0842</span>
+          <span class="status-badge in_progress" id="timeline-status-badge">In Progress</span>
+        </div>
+        <h3 id="timeline-ticket-title" style="font-size: 1.1rem; margin-top: 0.25rem;">Title</h3>
+      </div>
+      <button class="btn-close-modal" id="close-timeline">&times;</button>
+    </div>
 
-</main>
+    <div class="modal-body">
+      <!-- Assigned Technician Card (if assigned) -->
+      <div class="technician-assigned-card" id="timeline-tech-box" style="display: none;">
+        <div class="tech-profile-left">
+          <div class="tech-avatar" id="timeline-tech-avatar">RK</div>
+          <div class="tech-details">
+            <h5 id="timeline-tech-name">Ramesh Kumar</h5>
+            <p id="timeline-tech-specialty">Electrical Specialist</p>
+          </div>
+        </div>
+        <a href="#" id="timeline-tech-phone" class="btn-call-tech">
+          <i class="fa-solid fa-phone"></i>
+          <span>Call Staff</span>
+        </a>
+      </div>
 
-<footer class="site-footer">
-  <p>GitHub Pages: <a href="https://aryamansaboo.github.io/ui-ux-mid-term/" target="_blank">aryamansaboo.github.io/ui-ux-mid-term</a></p>
-  <p class="methodology-note">Put together for my UX Research &amp; Information Architecture midterm. Diagrams sketched by hand in Excalidraw; interviews, card sort, and tree test were run with real hostel residents.</p>
-</footer>
+      <!-- ETA Display Banner -->
+      <div id="timeline-eta-banner" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: var(--radius-md); padding: 0.65rem 0.9rem; margin-bottom: 1.25rem; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between;">
+        <span><i class="fa-solid fa-hourglass-start" style="color: var(--primary-400);"></i> Expected Resolution ETA:</span>
+        <strong id="timeline-eta-text" style="color: var(--primary-400);">Targeting Today, 4:00 PM</strong>
+      </div>
 
+      <!-- Vertical Stepper Timeline -->
+      <h4 style="font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-subtle); margin-bottom: 1rem;">
+        Live Transparency Timeline Log
+      </h4>
+      
+      <div class="stepper-timeline" id="stepper-timeline-container">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <div class="modal-footer" id="timeline-modal-footer">
+      <button class="btn-outline-sm" id="btn-timeline-close">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- 3. ESCALATE COMPLAINT PROMPT MODAL -->
+<div class="modal-backdrop" id="modal-escalate">
+  <div class="modal-dialog" style="max-width: 480px;">
+    <div class="modal-header" style="background: rgba(244, 63, 94, 0.1);">
+      <div class="modal-title" style="color: var(--accent-rose);">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>Escalate Complaint to Warden</span>
+      </div>
+      <button class="btn-close-modal" id="close-escalate">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
+        Escalating ticket <strong id="escalate-ticket-id" style="color: var(--text-main);">#TKT-2026-0842</strong> will immediately highlight it on Warden Rinu Babu's Urgent Action Banner with high visibility.
+      </p>
+
+      <div class="form-group">
+        <label>Select Reason for Escalation</label>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; font-size: 0.85rem; cursor: pointer;">
+            <input type="radio" name="esc-reason" value="No technician visit despite ETA passed" checked>
+            <span>No technician visit despite ETA passed</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; font-size: 0.85rem; cursor: pointer;">
+            <input type="radio" name="esc-reason" value="Issue worsened / Immediate safety hazard">
+            <span>Issue worsened / Immediate safety hazard</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; font-size: 0.85rem; cursor: pointer;">
+            <input type="radio" name="esc-reason" value="Unresolved for > 48 hours without update">
+            <span>Unresolved for > 48 hours without update</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="escalate-custom-text">Additional Context for Warden (Optional)</label>
+        <textarea id="escalate-custom-text" class="form-control" rows="2" placeholder="e.g. Need urgent fix due to upcoming exams..."></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-outline-sm" id="btn-cancel-escalate">Cancel</button>
+      <button class="btn-submit-primary" id="btn-submit-escalate" style="background: var(--accent-rose); width: auto; padding: 0.5rem 1.1rem;">
+        <span>Submit Urgent Escalation</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 4. RESOLUTION CONFIRMATION PROMPT MODAL -->
+<div class="modal-backdrop" id="modal-confirm-resolution">
+  <div class="modal-dialog" style="max-width: 480px;">
+    <div class="modal-header" style="background: rgba(16, 185, 129, 0.1);">
+      <div class="modal-title" style="color: var(--accent-emerald);">
+        <i class="fa-solid fa-clipboard-check"></i>
+        <span>Confirm Issue Resolution</span>
+      </div>
+      <button class="btn-close-modal" id="close-confirm-res">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <p style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 1rem;">
+        The maintenance team marked ticket <strong id="confirm-ticket-id">#TKT-2026-0791</strong> as <strong>Resolved</strong>. Please verify the repair:
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+        <button class="btn-submit-primary" id="btn-res-yes" style="background: linear-gradient(135deg, var(--accent-emerald), #059669);">
+          <i class="fa-solid fa-thumbs-up"></i>
+          <span>Yes, It's Fixed! (Close Ticket)</span>
+        </button>
+
+        <div id="rating-feedback-box" style="display: none; background: rgba(15, 23, 42, 0.6); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+          <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.4rem;">Rate Service Experience (1-5 Stars)</label>
+          <div style="font-size: 1.25rem; color: #f59e0b; margin-bottom: 0.5rem;" id="star-rating-picker">
+            <i class="fa-solid fa-star" data-star="1"></i>
+            <i class="fa-solid fa-star" data-star="2"></i>
+            <i class="fa-solid fa-star" data-star="3"></i>
+            <i class="fa-solid fa-star" data-star="4"></i>
+            <i class="fa-solid fa-star" data-star="5" style="color: var(--text-subtle);"></i>
+          </div>
+          <textarea id="res-feedback-text" class="form-control" rows="2" placeholder="Optional review comment..."></textarea>
+        </div>
+
+        <button class="btn-card-action escalate" id="btn-res-no" style="width: 100%; justify-content: center; padding: 0.65rem;">
+          <i class="fa-solid fa-thumbs-down"></i>
+          <span>No, Still Broken (Reopen Ticket)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. WARDEN INTERACTIVE TICKET CONTROL CENTER MODAL -->
+<div class="modal-backdrop" id="modal-warden-manage">
+  <div class="modal-dialog" style="max-width: 600px;">
+    <div class="modal-header" style="background: rgba(99, 102, 241, 0.1);">
+      <div class="modal-title">
+        <i class="fa-solid fa-sliders" style="color: var(--primary-400);"></i>
+        <span>Manage Ticket <span id="warden-manage-ticket-id">#TKT-2026-0842</span></span>
+      </div>
+      <button class="btn-close-modal" id="close-warden-manage">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
+        <strong id="wm-student-name" style="font-size: 0.95rem;">Aryaman Saboo</strong>
+        <span id="wm-student-room" style="font-size: 0.8rem; color: var(--text-muted); display: block;">Hostel A, Block B3, Room B3-304</span>
+        <p id="wm-issue-title" style="font-size: 0.88rem; color: var(--primary-400); margin-top: 0.35rem;">Ceiling Fan Noise</p>
+      </div>
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="wm-status-select">Update Status</label>
+          <select id="wm-status-select" class="form-control">
+            <option value="Submitted">Submitted</option>
+            <option value="Under Review">Under Review</option>
+            <option value="Assigned">Assigned</option>
+            <option value="In Progress">In Progress</option>
+            <option value="On Hold">On Hold</option>
+            <option value="Resolved">Resolved</option>
+            <option value="Closed">Closed</option>
+            <option value="Escalated">Escalated</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="wm-tech-select">Assign Staff Technician</label>
+          <select id="wm-tech-select" class="form-control">
+            <option value="">-- Select Technician --</option>
+            <option value="tech_1">Ramesh Kumar — Electrical</option>
+            <option value="tech_2">Suresh Sharma — Plumbing</option>
+            <option value="tech_3">Vikas Patil — IT & Network</option>
+            <option value="tech_4">Sunita Devi — Housekeeping</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="wm-eta-input">Set / Extend Target ETA Date & Time</label>
+        <input type="datetime-local" id="wm-eta-input" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label for="wm-note-input">Add Internal / Student-Facing Maintenance Progress Note</label>
+        <textarea id="wm-note-input" class="form-control" rows="2" placeholder="e.g. Sourced capacitor from central warehouse. Technician arriving by 3:00 PM."></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-outline-sm" id="btn-warden-cancel">Cancel</button>
+      <button class="btn-submit-primary" id="btn-warden-save-ticket" style="width: auto; padding: 0.5rem 1.2rem;">
+        <span>Save Changes & Push Log</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 6. UX RESEARCH DOCUMENT OVERLAY MODAL -->
+<div class="modal-backdrop" id="modal-research">
+  <div class="modal-dialog" style="max-width: 900px; height: 85vh;">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="fa-solid fa-book-open" style="color: var(--primary-400);"></i>
+        <span>Midterm UX Research & Information Architecture — Vijaybhoomi University</span>
+      </div>
+      <button class="btn-close-modal" id="close-research">&times;</button>
+    </div>
+
+    <div class="modal-body" style="padding: 1.5rem; color: var(--text-main);">
+      <h3>Where Did My Complaint Go?</h3>
+      <p style="color: var(--text-muted); margin-bottom: 1rem;">Designing transparency into the hostel maintenance complaint process • Author: Aryaman Saboo</p>
+      
+      <div style="background: var(--bg-card); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+        <h4 style="color: var(--primary-400); margin-bottom: 0.5rem;">Core Problem Space</h4>
+        <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
+          Hostel residents face anxiety not primarily due to slow repairs, but because of <strong>zero visibility</strong> into what happens after submitting a complaint. VUFIX addresses this by implementing an interactive live timeline, clear accountability, and student resolution confirmation.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notifications Container -->
+<div id="toast-container"></div>
+
+<!-- Application JavaScript Files -->
+<script src="store.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
