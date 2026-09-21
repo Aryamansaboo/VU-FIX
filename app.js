@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const createdFormatted = new Date(c.createdAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
     let statusText = c.status;
-    if (c.escalated) statusText = '🚨 Escalated';
+    if (c.escalated) statusText = 'Escalated';
 
     const isResolvedPending = c.status === 'Resolved' && c.studentConfirmed === null;
 
@@ -273,9 +273,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <strong>Ticket #${t.id} — ${escapeHtml(t.title)}</strong>
             <span>Student: ${t.studentName} (${t.room}) • Reason: "${escapeHtml(t.escalationReason || 'Delayed response')}"</span>
           </div>
-          <button class="btn-submit-primary btn-open-warden-manage" data-id="${t.id}" style="width: auto; padding: 0.4rem 0.85rem; font-size: 0.8rem; background: var(--accent-rose);">
-            <i class="fa-solid fa-bolt"></i>
-            <span>Assign Urgently</span>
+          <button class="btn-urgent-assign btn-open-warden-manage" data-id="${t.id}">
+            <i class="fa-solid fa-arrow-right"></i>
+            <span>Assign Now</span>
           </button>
         </div>
       `).join('');
