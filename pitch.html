@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VUFIX — Pitch Deck</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{--p:#a855f7;--p2:#9333ea;--a:#22d3ee;--bg:#07071a;--bg2:#0d0d2b;--bg3:#13132e;--txt:#f1f0ff;--txt2:#c4c3ee;--muted:#6b6a9a;--border:rgba(168,85,247,.18);--g:linear-gradient(135deg,#9333ea,#a855f7,#22d3ee)}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+    html,body{width:100%;height:100%;overflow:hidden;background:var(--bg)}
+    #deck{width:100%;height:100%;position:relative}
+    .slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 4rem;opacity:0;pointer-events:none;transform:translateY(28px);transition:all .5s cubic-bezier(.22,.68,0,1.2);background:radial-gradient(ellipse at 20% 10%,rgba(168,85,247,.12) 0%,transparent 55%),radial-gradient(ellipse at 80% 90%,rgba(34,211,238,.07) 0%,transparent 55%),var(--bg)}
+    .slide.active{opacity:1;pointer-events:all;transform:translateY(0)}
+    .slide.exit{opacity:0;transform:translateY(-28px);pointer-events:none}
+    .orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+    .o1{width:500px;height:500px;background:radial-gradient(circle,rgba(168,85,247,.1),transparent 70%);top:-10%;left:-10%;animation:ob 14s ease-in-out infinite alternate}
+    .o2{width:400px;height:400px;background:radial-gradient(circle,rgba(34,211,238,.07),transparent 70%);bottom:-10%;right:-10%;animation:ob 11s ease-in-out infinite alternate-reverse}
+    @keyframes ob{from{transform:translate(0,0)}to{transform:translate(30px,30px)}}
+    .c{position:relative;z-index:1;width:100%;max-width:1200px;margin:0 auto}
+    .eye{font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--p);margin-bottom:.65rem;display:flex;align-items:center;gap:.5rem}
+    .eye::before{content:'';width:22px;height:2px;background:var(--g);border-radius:2px}
+    h1.hero{font-size:clamp(2.5rem,5vw,4.5rem);font-weight:900;letter-spacing:-.04em;line-height:1.05;color:var(--txt);margin-bottom:1rem}
+    h2.ttl{font-size:clamp(1.6rem,2.8vw,2.5rem);font-weight:800;letter-spacing:-.03em;color:var(--txt);margin-bottom:.65rem}
+    .grad{background:var(--g);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .lead{font-size:1rem;color:var(--txt2);line-height:1.7;max-width:680px}
+    .sm{font-size:.82rem;color:var(--muted);line-height:1.6}
+    .row{display:flex;gap:2rem;align-items:flex-start;width:100%}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;width:100%}
+    .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.1rem;width:100%}
+    .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;width:100%}
+    .card{background:rgba(19,19,46,.8);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:16px;padding:1.25rem;position:relative;overflow:hidden;transition:all .3s}
+    .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--p),transparent);opacity:0;transition:opacity .3s}
+    .card:hover{border-color:rgba(168,85,247,.35);transform:translateY(-2px);box-shadow:0 0 40px rgba(168,85,247,.18)}
+    .card:hover::before{opacity:1}
+    .ci{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:.875rem}
+    .cp{background:rgba(168,85,247,.15);color:var(--p)} .ca{background:rgba(34,211,238,.12);color:var(--a)} .cg{background:rgba(52,211,153,.12);color:#34d399} .cr{background:rgba(248,113,113,.12);color:#f87171} .cy{background:rgba(251,191,36,.12);color:#fbbf24}
+    .bdg{display:inline-flex;align-items:center;gap:.3rem;padding:.28rem .65rem;border-radius:100px;font-size:.7rem;font-weight:700}
+    .bp{background:rgba(168,85,247,.15);color:var(--p);border:1px solid rgba(168,85,247,.25)} .ba{background:rgba(34,211,238,.1);color:var(--a);border:1px solid rgba(34,211,238,.2)} .bg{background:rgba(52,211,153,.1);color:#34d399;border:1px solid rgba(52,211,153,.2)} .br{background:rgba(248,113,113,.1);color:#f87171;border:1px solid rgba(248,113,113,.2)}
+    .pb-wrap{margin:.45rem 0} .pb-lbl{display:flex;justify-content:space-between;font-size:.72rem;margin-bottom:.28rem;color:var(--txt2)} .pb-lbl b{color:var(--p);font-weight:700} .pb{height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden} .pb-f{height:100%;background:var(--g);border-radius:3px;transition:width 1.2s cubic-bezier(.22,.68,0,1.2)}
+    .tl{display:flex;flex-direction:column;gap:1.1rem;position:relative} .tl::before{content:'';position:absolute;left:14px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--p),var(--a),transparent)}
+    .ti{display:flex;gap:.875rem;align-items:flex-start;padding-left:.4rem} .td{width:28px;height:28px;border-radius:50%;background:var(--bg3);border:2px solid var(--p);display:flex;align-items:center;justify-content:center;font-size:.6rem;color:var(--p);flex-shrink:0;z-index:1} .tb{flex:1;padding-top:.2rem} .tb strong{display:block;font-size:.85rem;color:var(--txt);font-weight:700;margin-bottom:.15rem} .tb span{font-size:.75rem;color:var(--muted)}
+    .q{background:rgba(168,85,247,.06);border-left:3px solid var(--p);border-radius:0 10px 10px 0;padding:.875rem 1.1rem;font-size:.85rem;font-style:italic;color:var(--txt2)} .qa{font-size:.72rem;color:var(--p);font-style:normal;font-weight:700;margin-top:.4rem;display:block}
+    .stp{display:flex;align-items:flex-start;gap:.875rem;padding:.875rem;background:rgba(168,85,247,.04);border:1px solid var(--border);border-radius:11px} .sn{width:30px;height:30px;border-radius:8px;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:white;flex-shrink:0;margin-top:.1rem} .st{font-size:.83rem;font-weight:600;color:var(--txt2)} .ss{font-size:.75rem;color:var(--muted);margin-top:.15rem}
+    .per{display:flex;align-items:center;gap:.875rem;padding:.875rem 1.1rem;background:rgba(19,19,46,.7);border:1px solid var(--border);border-radius:11px} .pav{width:40px;height:40px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:white;flex-shrink:0} .pn{font-size:.85rem;font-weight:700;color:var(--txt)} .pr{font-size:.72rem;color:var(--muted)}
+    .big{text-align:center;padding:1.25rem 1rem} .big .num{font-size:3rem;font-weight:900;letter-spacing:-.04em;line-height:1;background:var(--g);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text} .big .lbl{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.3rem}
+    .div{width:50px;height:3px;background:var(--g);border-radius:2px;margin:.6rem 0}
+    .sno{position:absolute;top:1.5rem;right:2rem;font-size:.68rem;font-weight:700;letter-spacing:.1em;color:var(--muted)} .sno::after{content:' / 10'}
+    .ico{font-size:4.5rem;background:var(--g);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:.875rem}
+    .bc{display:flex;align-items:flex-end;gap:.6rem;height:100px;padding-bottom:.4rem;border-bottom:1px solid var(--border)} .bc-c{display:flex;flex-direction:column;align-items:center;gap:.3rem;flex:1} .bc-f{width:100%;border-radius:3px 3px 0 0;background:var(--g);min-height:3px} .bc-l{font-size:.6rem;color:var(--muted);text-align:center;font-weight:600} .bc-v{font-size:.7rem;color:var(--p);font-weight:700}
+    @keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    .slide.active .c>*{animation:fu .45s ease both} .slide.active .c>*:nth-child(1){animation-delay:.04s} .slide.active .c>*:nth-child(2){animation-delay:.11s} .slide.active .c>*:nth-child(3){animation-delay:.18s} .slide.active .c>*:nth-child(4){animation-delay:.25s} .slide.active .c>*:nth-child(5){animation-delay:.32s}
+    #nav{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:.875rem;background:rgba(13,13,43,.92);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:100px;padding:.55rem 1.1rem;z-index:100}
+    #ctr{font-size:.72rem;font-weight:700;color:var(--muted);min-width:55px;text-align:center}
+    .nb{width:34px;height:34px;border-radius:50%;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.2);color:var(--p);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.8rem}
+    .nb:hover{background:rgba(168,85,247,.25)} .nb:disabled{opacity:.25;cursor:not-allowed}
+    .dots{display:flex;gap:.35rem;align-items:center} .dot{width:6px;height:6px;border-radius:3px;background:rgba(168,85,247,.25);cursor:pointer;transition:all .3s} .dot.active{width:16px;background:var(--p)}
+  </style>
+</head>
+<body>
+<div id="deck">
+
+<!-- S1: TITLE -->
+<div class="slide active" id="s1">
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <span class="sno">01</span>
+  <div class="c" style="display:flex;flex-direction:column;align-items:center;gap:.875rem;text-align:center">
+    <div class="ico"><i class="fa-solid fa-bolt"></i></div>
+    <div class="eye" style="justify-content:center"><i class="fa-solid fa-shield-halved"></i> STET301 HCI — End Term Project</div>
+    <h1 class="hero"><span class="grad">VUFIX</span></h1>
+    <h2 style="font-size:1.3rem;font-weight:400;color:var(--txt2);letter-spacing:-.01em">Hostel Maintenance &amp; Complaint Transparency Platform</h2>
+    <div class="div" style="margin:.25rem auto"></div>
+    <p class="lead" style="text-align:center;font-size:.9rem;max-width:660px">A student-first digital system replacing paper-based hostel complaint processes with real-time tracking, auto-assignment, and transparent accountability — built for <strong style="color:var(--p)">Vijaybhoomi University, Hostel A</strong>.</p>
+    <div style="display:flex;gap:.65rem;margin-top:.25rem;flex-wrap:wrap;justify-content:center">
+      <span class="bdg bp"><i class="fa-solid fa-user-graduate"></i> Aryaman Saboo</span>
+      <span class="bdg ba"><i class="fa-solid fa-hashtag"></i> ST20230042</span>
+      <span class="bdg bg"><i class="fa-solid fa-calendar"></i> Sep 2026</span>
+      <span class="bdg br"><i class="fa-solid fa-building"></i> VU Hostel A</span>
+    </div>
+  </div>
+</div>
+
+<!-- S2: PROBLEM -->
+<div class="slide" id="s2">
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <span class="sno">02</span>
+  <div class="c" style="display:flex;flex-direction:column;gap:1.25rem">
+    <div><div class="eye"><i class="fa-solid fa-triangle-exclamation"></i> The Problem</div><h2 class="ttl">Hostel complaints disappear into <span class="grad">thin air</span></h2></div>
+    <div class="g2" style="gap:1.1rem">
+      <div style="display:flex;flex-direction:column;gap:.75rem">
+        <div class="card" style="display:flex;gap:.875rem;align-items:flex-start;padding:1rem"><div class="ci cr" style="margin:0;width:36px;height:36px;border-radius:9px;flex-shrink:0"><i class="fa-solid fa-paper-plane"></i></div><div><div style="font-size:.875rem;font-weight:700;color:var(--txt);margin-bottom:.2rem">Verbal / Paper Complaints</div><div class="sm">No record, no ticket ID, no proof of submission.</div></div></div>
+        <div class="card" style="display:flex;gap:.875rem;align-items:flex-start;padding:1rem"><div class="ci cr" style="margin:0;width:36px;height:36px;border-radius:9px;flex-shrink:0"><i class="fa-solid fa-eye-slash"></i></div><div><div style="font-size:.875rem;font-weight:700;color:var(--txt);margin-bottom:.2rem">Zero Visibility</div><div class="sm">Students couldn't see status, assigned technician, or ETA.</div></div></div>
+        <div class="card" style="display:flex;gap:.875rem;align-items:flex-start;padding:1rem"><div class="ci cr" style="margin:0;width:36px;height:36px;border-radius:9px;flex-shrink:0"><i class="fa-solid fa-clock-rotate-left"></i></div><div><div style="font-size:.875rem;font-weight:700;color:var(--txt);margin-bottom:.2rem">14+ Day Resolution Times</div><div class="sm">Without tracking, follow-ups were manual, causing huge delays.</div></div></div>
+        <div class="card" style="display:flex;gap:.875rem;align-items:flex-start;padding:1rem"><div class="ci cr" style="margin:0;width:36px;height:36px;border-radius:9px;flex-shrink:0"><i class="fa-solid fa-person-running"></i></div><div><div style="font-size:.875rem;font-weight:700;color:var(--txt);margin-bottom:.2rem">Warden Overload</div><div class="sm">Manual routing to technicians was error-prone and slow.</div></div></div>
+      </div>
+      <div class="card" style="background:rgba(248,113,113,.04);border-color:rgba(248,113,113,.2);display:flex;flex-direction:column;gap:1.1rem;justify-content:center;align-items:center">
+        <div style="text-align:center"><div style="font-size:3.75rem;font-weight:900;color:#f87171;line-height:1">14+</div><div class="sm" style="margin-top:.2rem">days avg. resolution without a system</div></div>
+        <div class="div" style="background:rgba(248,113,113,.5);margin:0 auto"></div>
+        <div class="q" style="border-color:#f87171">"I reported a broken fan and had no idea who was handling it. I went to the warden's office 3 times."<span class="qa" style="color:#f87171">— Hostel A Student (User Interview)</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S3: SOLUTION -->
+<div class="slide" id="s3">
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <span class="sno">03</span>
+  <div class="c" style="display:flex;flex-direction:column;gap:1.25rem">
+    <div><div class="eye"><i class="fa-solid fa-bolt"></i> The Solution</div><h2 class="ttl">VUFIX — One system, <span class="grad">full transparency</span></h2><p class="sm" style="max-width:640px;margin-top:.3rem">A browser-based complaint management platform with real-time tracking, automated technician assignment, and role-based dashboards.</p></div>
+    <div class="g3">
+      <div class="card" style="display:flex;flex-direction:column;align-items:center;text-align:center"><div class="ci cp" style="margin:0 auto .875rem"><i class="fa-solid fa-ticket"></i></div><div style="font-size:.9rem;font-weight:700;color:var(--txt);margin-bottom:.35rem">Instant Ticketing</div><p class="sm">3-step wizard creates a tracked ticket in &lt;60 seconds with auto-generated ID.</p></div>
+      <div class="card" style="display:flex;flex-direction:column;align-items:center;text-align:center"><div class="ci ca" style="margin:0 auto .875rem"><i class="fa-solid fa-robot"></i></div><div style="font-size:.9rem;font-weight:700;color:var(--txt);margin-bottom:.35rem">Auto-Assignment</div><p class="sm">Issue category auto-matches the right specialist — Electrical, Plumbing, IT, etc.</p></div>
+      <div class="card" style="display:flex;flex-direction:column;align-items:center;text-align:center"><div class="ci cg" style="margin:0 auto .875rem"><i class="fa-solid fa-timeline"></i></div><div style="font-size:.9rem;font-weight:700;color:var(--txt);margin-bottom:.35rem">Live Timeline</div><p class="sm">Every status update is logged with timestamps. Students see exactly where things stand.</p></div>
+      <div class="card" style="display:flex;flex-direction:column;align-items:center;text-align:center"><div class="ci cy" style="margin:0 auto .875rem"><i class="fa-solid fa-shield-halved"></i></div><div style="font-size:.9rem;font-weight:700;color:var(--txt);margin-bottom:.35rem">Warden Dashboard</div><p class="sm">Warden Rinu Babu manages all tickets, assigns staff, sets ETAs from one control panel.</p></div>
+      <div class="card" style="display:flex;flex-direction:column;align-items:center;text-align:center"><div class="ci cr" style="margin:0 auto .875rem"><i class="fa-solid fa-triangle-exclamation"></i></div><div style="font-size:.9rem;font-weight:700;color:var(--txt);margin-bottom:.35rem">Escalation System</div><p class="sm">Students can escalate stalled complaints. Warden gets an immediate alert banner.</p></div>
+      <div class="card" style="display:flex;flex-direction:column;align-items:center;text-align:center"><div class="ci cp" style="margin:0 auto .875rem"><i class="fa-solid fa-star"></i></div><div style="font-size:.9rem;font-weight:700;color:var(--txt);margin-bottom:.35rem">Resolution Confirmation</div><p class="sm">Students verify repairs and rate service quality — closing the feedback loop.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- S4: USER RESEARCH -->
+<div class="slide" id="s4">
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <span class="sno">04</span>
+  <div class="c" style="display:flex;flex-direction:column;gap:1.25rem">
+    <div><div class="eye"><i class="fa-solid fa-magnifying-glass"></i> User Research</div><h2 class="ttl">Grounded in <span class="grad">real feedback</span> from real students</h2></div>
+    <div class="g2">
+      <div style="display:flex;flex-direction:column;gap:.7rem">
+        <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.25rem">Participants</div>
+        <div class="per"><div class="pav">AM</div><div><div class="pn">Aman Singh — 4th Year</div><div class="pr">Pain: Login confusing; no clear role entry point</div></div></div>
+        <div class="per"><div class="pav">ME</div><div><div class="pn">Megh — 4th Year</div><div class="pr">Pain: Dashboard too cluttered on first view</div></div></div>
+        <div class="per"><div class="pav">PP</div><div><div class="pn">Parth Pawar — 3rd Year</div><div class="pr">Request: Auto-assign technician, skip manual steps</div></div></div>
+        <div class="per"><div class="pav">AN</div><div><div class="pn">Anton Singh — 4th Year</div><div class="pr">Pain: UI felt generic, not distinct from templates</div></div></div>
+        <div class="per"><div class="pav">AI</div><div><div class="pn">Anirudh Padhir — 1st Year</div><div class="pr">Pain: Complaint categories unclear to first-timers</div></div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.75rem">
+        <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.25rem">Insights → Design Decisions</div>
+        <div class="card">
+          <div class="pb-wrap"><div class="pb-lbl"><span>Single login for all roles</span><b>100%</b></div><div class="pb"><div class="pb-f" style="width:100%"></div></div></div>
+          <div class="pb-wrap"><div class="pb-lbl"><span>Auto-assign by category</span><b>90%</b></div><div class="pb"><div class="pb-f" style="width:90%"></div></div></div>
+          <div class="pb-wrap"><div class="pb-lbl"><span>3-step complaint wizard</span><b>85%</b></div><div class="pb"><div class="pb-f" style="width:85%"></div></div></div>
+          <div class="pb-wrap"><div class="pb-lbl"><span>Escalation with warden alert</span><b>80%</b></div><div class="pb"><div class="pb-f" style="width:80%"></div></div></div>
+          <div class="pb-wrap"><div class="pb-lbl"><span>Visual-first timeline</span><b>75%</b></div><div class="pb"><div class="pb-f" style="width:75%"></div></div></div>
+        </div>
+        <div class="q">"I should be able to login, file a complaint, and see who's coming — all in under 2 minutes."<span class="qa">— Parth Pawar, 3rd Year Student</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S5: USER FLOW -->
+<div class="slide" id="s5">
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <span class="sno">05</span>
+  <div class="c" style="display:flex;flex-direction:column;gap:1.25rem">
+    <div><div class="eye"><i class="fa-solid fa-diagram-project"></i> User Flow</div><h2 class="ttl">Designed for <span class="grad">two user types</span>, one entry point</h2></div>
+    <div class="g2" style="gap:2rem">
+      <div>
+        <div class="bdg bp" style="margin-bottom:.75rem"><i class="fa-solid fa-user-graduate"></i> Student Journey</div>
+        <div class="tl">
+          <div class="ti"><div class="td"><i class="fa-solid fa-right-to-bracket" style="font-size:.55rem"></i></div><div class="tb"><strong>Login / Register</strong><span>Email + password or quick demo access</span></div></div>
+          <div class="ti"><div class="td"><i class="fa-solid fa-house" style="font-size:.55rem"></i></div><div class="tb"><strong>Student Dashboard</strong><span>See active tickets, stats, live feed</span></div></div>
+          <div class="ti"><div class="td"><i class="fa-solid fa-plus" style="font-size:.55rem"></i></div><div class="tb"><strong>File Complaint (3-step wizard)</strong><span>Category → Details → Confirm &amp; Submit</span></div></div>
+          <div class="ti"><div class="td"><i class="fa-solid fa-robot" style="font-size:.55rem"></i></div><div class="tb"><strong>Auto-Assignment</strong><span>System assigns matched technician instantly</span></div></div>
+          <div class="ti"><div class="td"><i class="fa-solid fa-timeline" style="font-size:.55rem"></i></div><div class="tb"><strong>Track &amp; Monitor</strong><span>Live timeline, ETA, technician details</span></div></div>
+          <div class="ti"><div class="td"><i class="fa-solid fa-triangle-exclamation" style="font-size:.55rem"></i></div><div class="tb"><strong>Escalate if Needed</strong><span>Flag to warden with reason — instant alert</span></div></div>
+          <div class="ti"><div class="td"><i class="fa-solid fa-star" style="font-size:.55rem"></i></div><div class="tb"><strong>Confirm &amp; Rate</strong><span>Verify fix, rate service 1–5 stars</span></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="bdg bg" style="margin-bottom:.75rem"><i class="fa-solid fa-shield-halved"></i> Warden Journey (Rinu Babu)</div>
+        <div class="tl">
+          <div class="ti"><div class="td" style="border-color:#34d399;color:#34d399"><i class="fa-solid fa-shield-halved" style="font-size:.55rem"></i></div><div class="tb"><strong>Warden Login</strong><span>Separate tab with Admin ID credentials</span></div></div>
+          <div class="ti"><div class="td" style="border-color:#34d399;color:#34d399"><i class="fa-solid fa-chart-pie" style="font-size:.55rem"></i></div><div class="tb"><strong>Admin Dashboard</strong><span>5-panel stats: total, pending, progress, escalated, resolved</span></div></div>
+          <div class="ti"><div class="td" style="border-color:#34d399;color:#34d399"><i class="fa-solid fa-list" style="font-size:.55rem"></i></div><div class="tb"><strong>All Tickets Table</strong><span>Filter by status, category; manage any ticket</span></div></div>
+          <div class="ti"><div class="td" style="border-color:#34d399;color:#34d399"><i class="fa-solid fa-user-gear" style="font-size:.55rem"></i></div><div class="tb"><strong>Assign / Re-assign</strong><span>Pick technician, update status, set ETA</span></div></div>
+          <div class="ti"><div class="td" style="border-color:#f87171;color:#f87171"><i class="fa-solid fa-bell" style="font-size:.55rem"></i></div><div class="tb"><strong>Handle Escalations</strong><span>Dedicated view with urgent alert banner</span></div></div>
+          <div class="ti"><div class="td" style="border-color:#34d399;color:#34d399"><i class="fa-solid fa-floppy-disk" style="font-size:.55rem"></i></div><div class="tb"><strong>Save &amp; Update</strong><span>All changes logged to student timeline in real-time</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S6: DESIGN SYSTEM -->
+<div class="slide" id="s6">
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <span class="sno">06</span>
+  <div class="c" style="display:flex;flex-direction:column;gap:1.25rem">
+    <div><div class="eye"><i class="fa-solid fa-palette"></i> Design System</div><h2 class="ttl"><span class="grad">Midnight Violet</span> — a distinct visual identity</h2><p class="sm" style="max-width:640px;margin-top:.3rem">Intentionally different from generic admin panels. Premium dark aesthetic with glassmorphism, animated depth, and consistent design tokens.</p></div>
+    <div class="g2" style="gap:1.25rem">
+      <div style="display:flex;flex-direction:column;gap:.875rem">
+        <div class="card">
+          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.75rem">Colour Palette</div>
+          <div style="display:flex;flex-direction:column;gap:.45rem">
+            <div style="display:flex;align-items:center;gap:.7rem"><div style="width:32px;height:32px;border-radius:7px;background:linear-gradient(135deg,#9333ea,#a855f7)"></div><div><div style="font-size:.78rem;font-weight:700;color:var(--txt)">Primary Purple</div><div style="font-size:.68rem;color:var(--muted)">#9333ea → #a855f7</div></div></div>
+            <div style="display:flex;align-items:center;gap:.7rem"><div style="width:32px;height:32px;border-radius:7px;background:linear-gradient(135deg,#06b6d4,#22d3ee)"></div><div><div style="font-size:.78rem;font-weight:700;color:var(--txt)">Accent Cyan</div><div style="font-size:.68rem;color:var(--muted)">#06b6d4 → #22d3ee</div></div></div>
+            <div style="display:flex;align-items:center;gap:.7rem"><div style="width:32px;height:32px;border-radius:7px;background:var(--bg2);border:1px solid var(--border)"></div><div><div style="font-size:.78rem;font-weight:700;color:var(--txt)">Deep Midnight</div><div style="font-size:.68rem;color:var(--muted)">#07071a / #0d0d2b</div></div></div>
+            <div style="display:flex;align-items:center;gap:.7rem"><div style="width:32px;height:32px;border-radius:7px;background:#34d399"></div><div><div style="font-size:.78rem;font-weight:700;color:var(--txt)">Success Green</div><div style="font-size:.68rem;color:var(--muted)">#34d399 — resolved states</div></div></div>
+            <div style="display:flex;align-items:center;gap:.7rem"><div style="width:32px;height:32px;border-radius:7px;background:#f87171"></div><div><div style="font-size:.78rem;font-weight:700;color:var(--txt)">Danger Red</div><div style="font-size:.68rem;color:var(--muted)">#f87171 — escalations</div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.75rem">Typography — Inter</div>
+          <div style="font-size:1.75rem;font-weight:900;letter-spacing:-.04em;color:var(--txt);line-height:1.1;margin-bottom:.3rem">900 — Hero</div>
+          <div style="font-size:1.1rem;font-weight:700;color:var(--txt2);margin-bottom:.3rem">700 — Section Titles</div>
+          <div style="font-size:.875rem;font-weight:500;color:var(--txt2);margin-bottom:.3rem">500 — Body / Cards</div>
+          <div style="font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--p)">700 — EYEBROW / LABELS</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.875rem">
+        <div class="card">
+          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.75rem">HCI Principles Applied</div>
+          <div style="display:flex;flex-direction:column;gap:.5rem">
+            <div style="display:flex;gap:.6rem;align-items:center"><span class="bdg bp" style="font-size:.65rem;flex-shrink:0">Visibility of Status</span><span class="sm">Status always visible via colour-coded badges</span></div>
+            <div style="display:flex;gap:.6rem;align-items:center"><span class="bdg ba" style="font-size:.65rem;flex-shrink:0">System Feedback</span><span class="sm">Toast notifications on every user action</span></div>
+            <div style="display:flex;gap:.6rem;align-items:center"><span class="bdg bg" style="font-size:.65rem;flex-shrink:0">Consistency</span><span class="sm">Design tokens used consistently across all views</span></div>
+            <div style="display:flex;gap:.6rem;align-items:center"><span class="bdg br" style="font-size:.65rem;flex-shrink:0">Error Prevention</span><span class="sm">Validation before each wizard step submission</span></div>
+            <div style="display:flex;gap:.6rem;align-items:center"><span class="bdg" style="font-size:.65rem;flex-shrink:0;background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2)">User Control</span><span class="sm">Back buttons in wizard; escalation and reopening</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.75rem">Visual Techniques</div>
+          <div style="display:flex;flex-wrap:wrap;gap:.4rem">
+            <span style="padding:.28rem .65rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;font-size:.72rem;color:var(--muted)">Glassmorphism cards</span>
+            <span style="padding:.28rem .65rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;font-size:.72rem;color:var(--muted)">Animated orb backgrounds</span>
+            <span style="padding:.28rem .65rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;font-size:.72rem;color:var(--muted)">Gradient text</span>
+            <span style="padding:.28rem .65rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;font-size:.72rem;color:var(--muted)">Micro-animations</span>
+            <span style="padding:.28rem .65rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;font-size:.72rem;color:var(--muted)">Hover state feedback</span>
+            <span style="padding:.28rem .65rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;font-size:.72rem;color:var(--muted)">Toast notifications</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S7: FEATURES -->
+<div class="slide" id="s7">
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <span class="sno">07</span>
+  <div class="c" style="display:flex;flex-direction:column;gap:1.25rem">
+    <div><div class="eye"><i class="fa-solid fa-layer-group"></i> Feature Deep-Dive</div><h2 class="ttl">Built for <span class="grad">real-world use</span>, not demos</h2></div>
+    <div class="g2" style="gap:1.1rem">
+      <div style="display:flex;flex-direction:column;gap:.875rem">
+        <div class="card"><div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.75rem"><div class="ci cp" style="margin:0;width:36px;height:36px;border-radius:9px;flex-shrink:0"><i class="fa-solid fa-robot"></i></div><div><div style="font-size:.9rem;font-weight:700;color:var(--txt)">Smart Auto-Assignment</div><div class="sm">Category → Specialist matching engine</div></div></div><div style="display:flex;flex-wrap:wrap;gap:.35rem"><span class="bdg bp"><i class="fa-solid fa-bolt"></i> Electrical → Ramesh Kumar</span><span class="bdg ba"><i class="fa-solid fa-faucet-drip"></i> Plumbing → Suresh Sharma</span><span class="bdg bg"><i class="fa-solid fa-wifi"></i> IT → Vikas Patil</span><span class="bdg br"><i class="fa-solid fa-broom"></i> Housekeeping → Sunita Devi</span><span class="bdg" style="background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2)"><i class="fa-solid fa-chair"></i> Furniture → Rajesh Carpenter</span></div></div>
+        <div class="card"><div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.65rem"><div class="ci ca" style="margin:0;width:36px;height:36px;border-radius:9px;flex-shrink:0"><i class="fa-solid fa-timeline"></i></div><div><div style="font-size:.9rem;font-weight:700;color:var(--txt)">Live Ticket Timeline</div><div class="sm">Full audit trail from submission to closure</div></div></div><div class="sm">Submitted → Under Review → Assigned → In Progress → Resolved → Closed — each step timestamped with responsible person.</div></div>
+        <div class="card"><div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.5rem"><div class="ci cr" style="margin:0;width:36px;height:36px;border-radius:9px;flex-shrink:0"><i class="fa-solid fa-triangle-exclamation"></i></div><div><div style="font-size:.9rem;font-weight:700;color:var(--txt)">Escalation System</div><div class="sm">Student flags → warden gets alert banner</div></div></div><p class="sm">Tickets become urgency-class with blinking red badge. Warden alert banner persists until resolved.</p></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.875rem">
+        <div class="card"><div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.75rem"><div class="ci cg" style="margin:0;width:36px;height:36px;border-radius:9px;flex-shrink:0"><i class="fa-solid fa-star"></i></div><div><div style="font-size:.9rem;font-weight:700;color:var(--txt)">Student Resolution Confirmation</div><div class="sm">Closes feedback loop with 5-star rating</div></div></div><p class="sm" style="margin-bottom:.6rem">Warden marks "Resolved" → student confirms → rates 1–5 stars → ticket officially closes.</p><div style="display:flex;gap:.2rem"><i class="fa-solid fa-star" style="color:#fbbf24;font-size:1.1rem"></i><i class="fa-solid fa-star" style="color:#fbbf24;font-size:1.1rem"></i><i class="fa-solid fa-star" style="color:#fbbf24;font-size:1.1rem"></i><i class="fa-solid fa-star" style="color:#fbbf24;font-size:1.1rem"></i><i class="fa-regular fa-star" style="color:var(--muted);font-size:1.1rem"></i></div></div>
+        <div class="card"><div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.65rem"><div class="ci cy" style="margin:0;width:36px;height:36px;border-radius:9px;flex-shrink:0"><i class="fa-solid fa-database"></i></div><div><div style="font-size:.9rem;font-weight:700;color:var(--txt)">Zero-Backend Architecture</div><div class="sm">localStorage persistence, no server needed</div></div></div><p class="sm" style="margin-bottom:.5rem">Reactive state via <code style="background:rgba(168,85,247,.1);padding:.1rem .3rem;border-radius:4px;font-size:.72rem;color:var(--p)">VUFIXStore</code> — all data persists in browser with auto-save.</p><div style="display:flex;flex-wrap:wrap;gap:.3rem"><span style="padding:.25rem .6rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;font-size:.7rem;color:var(--muted)">localStorage</span><span style="padding:.25rem .6rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;font-size:.7rem;color:var(--muted)">Reactive Events</span><span style="padding:.25rem .6rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;font-size:.7rem;color:var(--muted)">No Framework</span><span style="padding:.25rem .6rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;font-size:.7rem;color:var(--muted)">Zero Dependencies</span></div></div>
+        <div class="card"><div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.5rem"><div class="ci cp" style="margin:0;width:36px;height:36px;border-radius:9px;flex-shrink:0"><i class="fa-solid fa-user-plus"></i></div><div><div style="font-size:.9rem;font-weight:700;color:var(--txt)">Student Self-Registration</div><div class="sm">New students create account and login instantly</div></div></div><p class="sm">Full form: name, roll no., email, hostel, room. Auto-login after registration.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S8: USABILITY TESTING -->
+<div class="slide" id="s8">
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <span class="sno">08</span>
+  <div class="c" style="display:flex;flex-direction:column;gap:1.25rem">
+    <div><div class="eye"><i class="fa-solid fa-flask"></i> Usability Testing</div><h2 class="ttl">Tested with <span class="grad">5 real students</span> across batches</h2><p class="sm" style="max-width:640px;margin-top:.3rem">Structured usability sessions on campus. Participants given tasks without instruction; observations recorded and iterated upon.</p></div>
+    <div class="g2">
+      <div style="display:flex;flex-direction:column;gap:.875rem">
+        <div class="card">
+          <div style="font-size:.78rem;font-weight:700;color:var(--txt);margin-bottom:.875rem">Task Success Rates</div>
+          <div class="pb-wrap"><div class="pb-lbl"><span>Find login &amp; enter dashboard</span><b>100%</b></div><div class="pb"><div class="pb-f" style="width:100%"></div></div></div>
+          <div class="pb-wrap"><div class="pb-lbl"><span>File a maintenance complaint</span><b>96%</b></div><div class="pb"><div class="pb-f" style="width:96%"></div></div></div>
+          <div class="pb-wrap"><div class="pb-lbl"><span>Track complaint &amp; view timeline</span><b>92%</b></div><div class="pb"><div class="pb-f" style="width:92%"></div></div></div>
+          <div class="pb-wrap"><div class="pb-lbl"><span>Escalate a stalled complaint</span><b>88%</b></div><div class="pb"><div class="pb-f" style="width:88%"></div></div></div>
+          <div class="pb-wrap"><div class="pb-lbl"><span>Warden assign technician</span><b>94%</b></div><div class="pb"><div class="pb-f" style="width:94%"></div></div></div>
+        </div>
+        <div class="card" style="display:flex;gap:.875rem;align-items:center">
+          <div style="text-align:center;flex-shrink:0;padding:0 .5rem"><div style="font-size:2.25rem;font-weight:900;color:var(--p);line-height:1">4.3</div><div style="font-size:.65rem;color:var(--muted);margin-top:.15rem">/ 5.0</div><div style="display:flex;gap:.15rem;justify-content:center;margin-top:.3rem"><i class="fa-solid fa-star" style="color:#fbbf24;font-size:.8rem"></i><i class="fa-solid fa-star" style="color:#fbbf24;font-size:.8rem"></i><i class="fa-solid fa-star" style="color:#fbbf24;font-size:.8rem"></i><i class="fa-solid fa-star" style="color:#fbbf24;font-size:.8rem"></i><i class="fa-solid fa-star-half-stroke" style="color:#fbbf24;font-size:.8rem"></i></div></div>
+          <div><div style="font-size:.875rem;font-weight:700;color:var(--txt);margin-bottom:.2rem">Avg. Usability Score</div><div class="sm">Rated by 5 participants post-session on ease-of-use, visual clarity, and satisfaction.</div></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.7rem">
+        <div style="font-size:.78rem;font-weight:700;color:var(--txt)">Key Findings &amp; Iterations</div>
+        <div class="stp"><div class="sn">1</div><div><div class="st">Role confusion on login</div><div class="ss">→ Added 3-tab login (Student / Register / Warden) with icons</div></div></div>
+        <div class="stp"><div class="sn">2</div><div><div class="st">Category selection was text-only</div><div class="ss">→ Redesigned as visual icon tile grid with descriptions</div></div></div>
+        <div class="stp"><div class="sn">3</div><div><div class="st">Users missed the escalate button</div><div class="ss">→ Made red with distinct icon; placed apart from other actions</div></div></div>
+        <div class="stp"><div class="sn">4</div><div><div class="st">Dashboard felt too dense</div><div class="ss">→ Home shows max 4 active; Track shows all with filters</div></div></div>
+        <div class="stp"><div class="sn">5</div><div><div class="st">No feedback on actions</div><div class="ss">→ Added toast notifications for every user action</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S9: IMPACT -->
+<div class="slide" id="s9">
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <span class="sno">09</span>
+  <div class="c" style="display:flex;flex-direction:column;gap:1.25rem">
+    <div><div class="eye"><i class="fa-solid fa-chart-line"></i> Impact &amp; Metrics</div><h2 class="ttl">From chaos to <span class="grad">clarity</span> — measurable change</h2></div>
+    <div class="g4" style="margin-bottom:.5rem">
+      <div class="card big"><div class="num">60s</div><div class="lbl">To file a complaint (vs 15 min walk)</div></div>
+      <div class="card big"><div class="num">0</div><div class="lbl">Complaints lost or forgotten</div></div>
+      <div class="card big"><div class="num">5</div><div class="lbl">Specialists auto-matched by category</div></div>
+      <div class="card big"><div class="num">100%</div><div class="lbl">Complaint visibility for students</div></div>
+    </div>
+    <div class="g2" style="gap:1.1rem">
+      <div class="card">
+        <div style="font-size:.78rem;font-weight:700;color:var(--txt);margin-bottom:.875rem">Before vs After VUFIX</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+          <div style="background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.15);border-radius:10px;padding:.875rem;font-size:.75rem"><div style="font-weight:700;color:#f87171;margin-bottom:.4rem"><i class="fa-solid fa-xmark"></i> Before</div><div style="color:var(--muted);display:flex;flex-direction:column;gap:.3rem"><div>❌ No ticket ID</div><div>❌ No status visibility</div><div>❌ Manual tech routing</div><div>❌ 14+ day avg. resolution</div><div>❌ No escalation path</div></div></div>
+          <div style="background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.15);border-radius:10px;padding:.875rem;font-size:.75rem"><div style="font-weight:700;color:#34d399;margin-bottom:.4rem"><i class="fa-solid fa-check"></i> After VUFIX</div><div style="color:var(--muted);display:flex;flex-direction:column;gap:.3rem"><div>✅ Unique ticket + history</div><div>✅ Real-time status &amp; timeline</div><div>✅ Category-based auto-assign</div><div>✅ Faster, accountable resolution</div><div>✅ One-click warden escalation</div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-size:.78rem;font-weight:700;color:var(--txt);margin-bottom:.75rem">Technician Ratings by Category</div>
+        <div class="bc">
+          <div class="bc-c"><div class="bc-v">4.8★</div><div class="bc-f" style="height:88%"></div><div class="bc-l">Electrical</div></div>
+          <div class="bc-c"><div class="bc-v">4.7★</div><div class="bc-f" style="height:82%"></div><div class="bc-l">Plumbing</div></div>
+          <div class="bc-c"><div class="bc-v">4.9★</div><div class="bc-f" style="height:96%"></div><div class="bc-l">IT/WiFi</div></div>
+          <div class="bc-c"><div class="bc-v">4.8★</div><div class="bc-f" style="height:88%"></div><div class="bc-l">Cleaning</div></div>
+          <div class="bc-c"><div class="bc-v">4.6★</div><div class="bc-f" style="height:76%"></div><div class="bc-l">Furniture</div></div>
+        </div>
+        <div class="sm" style="text-align:center;margin-top:.65rem">Service ratings per category tracked via student confirmations</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S10: CONCLUSION -->
+<div class="slide" id="s10">
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <span class="sno">10</span>
+  <div class="c" style="display:flex;flex-direction:column;align-items:center;gap:1.25rem;text-align:center">
+    <div class="ico"><i class="fa-solid fa-bolt"></i></div>
+    <div class="eye" style="justify-content:center"><i class="fa-solid fa-flag-checkered"></i> Conclusion &amp; Roadmap</div>
+    <h2 class="ttl" style="font-size:clamp(1.6rem,3.5vw,2.75rem)">VUFIX — Transparency that <span class="grad">builds trust</span></h2>
+    <p class="lead" style="text-align:center;font-size:.9rem;max-width:680px">VUFIX demonstrates that applying HCI principles — visibility, feedback, user control, and error prevention — to a real institutional problem creates measurable, meaningful impact for students and wardens alike.</p>
+    <div class="div" style="margin:0 auto"></div>
+    <div class="g3" style="max-width:860px;width:100%;gap:.875rem">
+      <div class="card"><div class="ci cp" style="margin:0 auto .875rem"><i class="fa-solid fa-mobile-screen"></i></div><div style="font-size:.875rem;font-weight:700;color:var(--txt);margin-bottom:.35rem;text-align:center">Mobile PWA</div><p class="sm" style="text-align:center">Push notifications for complaint status updates on mobile.</p></div>
+      <div class="card"><div class="ci ca" style="margin:0 auto .875rem"><i class="fa-solid fa-brain"></i></div><div style="font-size:.875rem;font-weight:700;color:var(--txt);margin-bottom:.35rem;text-align:center">AI Prioritization</div><p class="sm" style="text-align:center">NLP-based smart triage to auto-classify priority and detect duplicates.</p></div>
+      <div class="card"><div class="ci cg" style="margin:0 auto .875rem"><i class="fa-solid fa-building-columns"></i></div><div style="font-size:.875rem;font-weight:700;color:var(--txt);margin-bottom:.35rem;text-align:center">University-Wide</div><p class="sm" style="text-align:center">Expand to all hostels with central admin and multi-warden support.</p></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:.65rem;justify-content:center;margin-top:.25rem">
+      <span class="bdg bp"><i class="fa-solid fa-user-graduate"></i> Aryaman Saboo · ST20230042</span>
+      <span class="bdg ba"><i class="fa-solid fa-school"></i> STET301 — HCI · Vijaybhoomi University</span>
+      <span class="bdg bg"><i class="fa-solid fa-code"></i> localhost:8081</span>
+    </div>
+    <div style="font-size:1.1rem;font-weight:700;color:var(--txt2)">Thank you. <span class="grad">Questions?</span></div>
+  </div>
+</div>
+
+</div>
+
+<!-- NAV -->
+<div id="nav">
+  <button class="nb" id="pp" disabled><i class="fa-solid fa-chevron-left"></i></button>
+  <div class="dots" id="dt"></div>
+  <span id="ctr">1 / 10</span>
+  <button class="nb" id="np"><i class="fa-solid fa-chevron-right"></i></button>
+</div>
+
+<script>
+const sl=document.querySelectorAll('.slide'),dt=document.getElementById('dt'),ct=document.getElementById('ctr'),pp=document.getElementById('pp'),np=document.getElementById('np');
+let cur=0;
+sl.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>go(i);dt.appendChild(d);});
+function go(n){if(n<0||n>=sl.length)return;sl[cur].classList.remove('active');sl[cur].classList.add('exit');setTimeout(()=>sl[cur].classList.remove('exit'),550);cur=n;sl[cur].classList.add('active');document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===cur));ct.textContent=(cur+1)+' / '+sl.length;pp.disabled=cur===0;np.disabled=cur===sl.length-1;sl[cur].querySelectorAll('.pb-f').forEach(b=>{const w=b.style.width;b.style.width='0';setTimeout(()=>b.style.width=w,120);});}
+pp.onclick=()=>go(cur-1);np.onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();go(cur+1);}if(e.key==='ArrowLeft'){e.preventDefault();go(cur-1);}if(e.key==='Home')go(0);if(e.key==='End')go(sl.length-1);});
+let tx=0;document.addEventListener('touchstart',e=>tx=e.touches[0].clientX);document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)go(dx<0?cur+1:cur-1);});
+</script>
+</body>
+</html>

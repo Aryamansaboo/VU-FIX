@@ -54,12 +54,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const navUserName = document.getElementById('nav-user-name');
     const notifDot = document.getElementById('notif-unread-dot');
 
+    const btnHeaderLogout = document.getElementById('btn-header-logout');
+
     if (user) {
       userDropdownBtn.style.display = 'flex';
+      btnHeaderLogout.style.display = 'inline-flex';
       navUserAvatar.textContent = user.avatar || 'US';
       navUserName.textContent = user.name;
     } else {
       userDropdownBtn.style.display = 'none';
+      btnHeaderLogout.style.display = 'none';
     }
 
     const unreadCount = state.notifications.filter(n => !n.read).length;
@@ -67,23 +71,40 @@ document.addEventListener('DOMContentLoaded', () => {
       notifDot.style.display = unreadCount > 0 ? 'block' : 'none';
     }
 
-    // 2. View Routing
     const viewAuth = document.getElementById('view-auth');
     const viewStudent = document.getElementById('view-student');
     const viewWarden = document.getElementById('view-warden');
 
-    viewAuth.style.display = 'none';
-    viewStudent.style.display = 'none';
-    viewWarden.style.display = 'none';
+    if (viewAuth) viewAuth.style.display = 'none';
+    if (viewStudent) viewStudent.style.display = 'none';
+    if (viewWarden) viewWarden.style.display = 'none';
+
+    const path = window.location.pathname.toLowerCase();
 
     if (!user) {
-      viewAuth.style.display = 'block';
+      if (path.endsWith('admin.html') || path.endsWith('student.html')) {
+        window.location.href = 'index.html';
+        return;
+      }
+      if (viewAuth) viewAuth.style.display = 'block';
     } else if (user.role === 'student') {
-      viewStudent.style.display = 'block';
-      renderStudentPortal(state);
+      if (!path.endsWith('student.html')) {
+        window.location.href = 'student.html';
+        return;
+      }
+      if (viewStudent) {
+        viewStudent.style.display = 'block';
+        renderStudentPortal(state);
+      }
     } else if (user.role === 'warden') {
-      viewWarden.style.display = 'block';
-      renderWardenPortal(state);
+      if (!path.endsWith('admin.html')) {
+        window.location.href = 'admin.html';
+        return;
+      }
+      if (viewWarden) {
+        viewWarden.style.display = 'block';
+        renderWardenPortal(state);
+      }
     }
   }
 
@@ -392,6 +413,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('btn-nav-logout').addEventListener('click', () => {
+      store.logout();
+      showToast('Logged Out', 'Session terminated.', 'info');
+    });
+
+    document.getElementById('btn-header-logout').addEventListener('click', () => {
       store.logout();
       showToast('Logged Out', 'Session terminated.', 'info');
     });

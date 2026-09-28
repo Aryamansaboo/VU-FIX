@@ -90,6 +90,17 @@ const DEFAULT_PRESETS = {
       status: 'Available',
       icon: 'fa-broom',
       color: '#10b981'
+    },
+    {
+      id: 'tech_5',
+      name: 'Rajesh Carpenter',
+      specialty: 'Carpentry / Furniture Specialist',
+      phone: '+91 98567 89012',
+      avatar: 'RC',
+      rating: 4.6,
+      status: 'Available',
+      icon: 'fa-hammer',
+      color: '#d97706'
     }
   ],
   complaints: [
@@ -549,6 +560,54 @@ class Store {
     const ticketId = 'TKT-2026-' + String(Math.floor(1000 + Math.random() * 9000));
     const nowIso = new Date().toISOString();
 
+    // -------------------------------------------------------------
+    // AUTOMATIC TECHNICIAN ASSIGNMENT LOGIC (HCI Assignment)
+    // -------------------------------------------------------------
+    let assignedTechId = null;
+    let initialStatus = 'Submitted';
+    let timeline = [
+      {
+        id: 'log_' + Date.now(),
+        timestamp: nowIso,
+        title: 'Complaint Submitted',
+        text: `Ticket ${ticketId} registered under category [${data.category}]. Preferred visit slot: ${data.preferredSlot}.`,
+        author: user.name,
+        badge: 'Submitted',
+        type: 'submitted'
+      }
+    ];
+
+    if (data.category === 'Electrical') assignedTechId = 'tech_1';
+    else if (data.category === 'Plumbing') assignedTechId = 'tech_2';
+    else if (data.category === 'IT / Network') assignedTechId = 'tech_3';
+    else if (data.category === 'Housekeeping / Cleanliness') assignedTechId = 'tech_4';
+    else if (data.category === 'Carpentry / Furniture') assignedTechId = 'tech_5';
+
+    let assignedTechName = null;
+    let assignedTechPhone = null;
+    let assignedTechAvatar = null;
+    let assignedTechSpecialty = null;
+
+    if (assignedTechId) {
+      const tech = this.state.technicians.find(t => t.id === assignedTechId);
+      if (tech) {
+        assignedTechName = tech.name;
+        assignedTechPhone = tech.phone;
+        assignedTechAvatar = tech.avatar;
+        assignedTechSpecialty = tech.specialty;
+        initialStatus = 'Assigned';
+        timeline.push({
+          id: 'log_' + (Date.now() + 1),
+          timestamp: nowIso,
+          title: 'System Auto-Assigned',
+          text: `System automatically assigned ${tech.name} (${tech.specialty}) based on issue category.`,
+          author: 'Automated Assignment System',
+          badge: 'Assigned',
+          type: 'assigned'
+        });
+      }
+    }
+
     const newComplaint = {
       id: ticketId,
       studentId: user.id,
@@ -562,26 +621,19 @@ class Store {
       description: data.description,
       priority: data.priority || 'Medium',
       preferredSlot: data.preferredSlot || 'Any Time',
-      status: 'Submitted',
+      status: initialStatus,
       createdAt: nowIso,
       eta: null,
-      assignedTechnicianId: null,
-      assignedTechnicianName: null,
+      assignedTechnicianId: assignedTechId,
+      assignedTechnicianName: assignedTechName,
+      assignedTechnicianPhone: assignedTechPhone,
+      assignedTechnicianAvatar: assignedTechAvatar,
+      assignedTechnicianSpecialty: assignedTechSpecialty,
       escalated: false,
       escalationReason: null,
       studentConfirmed: null,
       images: data.images || [],
-      timeline: [
-        {
-          id: 'log_' + Date.now(),
-          timestamp: nowIso,
-          title: 'Complaint Submitted',
-          text: `Ticket ${ticketId} registered under category [${data.category}]. Preferred visit slot: ${data.preferredSlot}.`,
-          author: user.name,
-          badge: 'Submitted',
-          type: 'submitted'
-        }
-      ]
+      timeline: timeline
     };
 
     this.state.complaints.unshift(newComplaint);

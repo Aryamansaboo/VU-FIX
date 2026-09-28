@@ -3,820 +3,1545 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VUFIX — Hostel Maintenance & Complaint Transparency Portal | Vijaybhoomi University</title>
-  
-  <!-- FontAwesome 6 Icons CDN -->
+  <title>VUFIX — Hostel Complaint Management</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- VUFIX Custom CSS Design System -->
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       VUFIX — MIDNIGHT VIOLET DESIGN SYSTEM
+       ============================================================ */
+    :root {
+      --bg-root:    #07071a;
+      --bg-main:    #0d0d2b;
+      --bg-card:    #13132e;
+      --bg-hover:   #1a1a40;
+      --bg-glass:   rgba(19,19,46,0.85);
+
+      --primary:        #a855f7;
+      --primary-h:      #9333ea;
+      --primary-glow:   rgba(168,85,247,0.35);
+      --primary-ring:   rgba(168,85,247,0.2);
+
+      --accent:     #22d3ee;
+      --accent-glow: rgba(34,211,238,0.2);
+
+      --text-bright: #f1f0ff;
+      --text-dark:   #e2e1ff;
+      --text-gray:   #9594c0;
+      --text-muted:  #4d4b7a;
+
+      --border:        rgba(168,85,247,0.15);
+      --border-s:      rgba(168,85,247,0.3);
+
+      --success:  #34d399; --success-bg: rgba(52,211,153,0.1);
+      --danger:   #f87171; --danger-bg:  rgba(248,113,113,0.1);
+      --warning:  #fbbf24; --warning-bg: rgba(251,191,36,0.1);
+      --info:     #60a5fa; --info-bg:    rgba(96,165,250,0.1);
+
+      --r-xl: 20px; --r-lg: 14px; --r-md: 10px; --r-sm: 6px;
+      --sidebar: 260px;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--bg-root); color:var(--text-dark); min-height:100vh; overflow-x:hidden; }
+
+    /* animated orbs */
+    body::before, body::after {
+      content:''; position:fixed; border-radius:50%; filter:blur(120px); pointer-events:none; z-index:0;
+    }
+    body::before {
+      width:600px; height:600px;
+      background:radial-gradient(circle,rgba(168,85,247,.12),transparent 70%);
+      top:-150px; left:-150px;
+      animation:orb 12s ease-in-out infinite alternate;
+    }
+    body::after {
+      width:500px; height:500px;
+      background:radial-gradient(circle,rgba(34,211,238,.08),transparent 70%);
+      bottom:-100px; right:-100px;
+      animation:orb 10s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes orb { from{transform:translate(0,0) scale(1)} to{transform:translate(40px,40px) scale(1.1)} }
+    @keyframes fade-up { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes modal-in { from{opacity:0;transform:scale(.95) translateY(8px)} to{opacity:1;transform:scale(1) translateY(0)} }
+    @keyframes slide-in { from{opacity:0;transform:translateX(-16px)} to{opacity:1;transform:translateX(0)} }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    /* ============================================================ VIEWS */
+    #app { position:relative; z-index:1; }
+    .view { display:none; }
+    .view.active { display:flex; }
+
+    /* ============================================================ AUTH */
+    #view-auth {
+      min-height:100vh; flex-direction:column;
+      align-items:center; justify-content:center; padding:2rem;
+      background:
+        radial-gradient(ellipse at top left,rgba(168,85,247,.15) 0%,transparent 50%),
+        radial-gradient(ellipse at bottom right,rgba(34,211,238,.08) 0%,transparent 50%),
+        var(--bg-root);
+    }
+    .auth-card {
+      background:rgba(19,19,46,.9); backdrop-filter:blur(24px);
+      border:1px solid var(--border-s); border-radius:var(--r-xl);
+      width:100%; max-width:460px; padding:2.5rem;
+      box-shadow:0 32px 64px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.05);
+      animation:fade-up .4s ease;
+    }
+    .auth-logo-wrap { text-align:center; margin-bottom:1.5rem; }
+    .auth-logo-icon {
+      font-size:2.8rem;
+      background:linear-gradient(135deg,#a855f7,#22d3ee);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .auth-logo-wrap h1 {
+      font-size:1.875rem; font-weight:800; letter-spacing:-.03em;
+      background:linear-gradient(135deg,var(--text-bright),var(--primary));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .auth-logo-wrap p { color:var(--text-gray); font-size:.875rem; margin-top:.25rem; }
+
+    .auth-tabs { display:flex; background:rgba(7,7,26,.6); border:1px solid var(--border); border-radius:var(--r-md); padding:.2rem; margin-bottom:1.75rem; gap:.2rem; }
+    .auth-tab { flex:1; padding:.625rem .5rem; border:none; background:transparent; color:var(--text-muted); font-size:.8rem; font-weight:600; border-radius:8px; cursor:pointer; transition:all .25s; display:flex; align-items:center; justify-content:center; gap:.4rem; }
+    .auth-tab.active { background:linear-gradient(135deg,rgba(168,85,247,.3),rgba(34,211,238,.1)); color:var(--text-bright); border:1px solid var(--border-s); box-shadow:0 0 12px var(--primary-ring); }
+
+    .form-group { display:flex; flex-direction:column; gap:.4rem; margin-bottom:1.1rem; }
+    .form-label { font-size:.8rem; font-weight:500; color:var(--text-gray); letter-spacing:.02em; }
+    .form-control {
+      background:rgba(7,7,26,.7); color:var(--text-bright);
+      padding:.8rem 1rem; border:1px solid var(--border); border-radius:var(--r-sm);
+      font-size:.875rem; outline:none; transition:all .2s; width:100%;
+    }
+    .form-control:focus { border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-ring); }
+    .form-control::placeholder { color:var(--text-muted); }
+    .form-control option { background:var(--bg-card); }
+
+    .btn-primary {
+      background:linear-gradient(135deg,#9333ea,#a855f7,#22d3ee);
+      background-size:200%; color:white; border:none; padding:.875rem 1.5rem;
+      border-radius:var(--r-sm); font-size:.875rem; font-weight:700; cursor:pointer;
+      display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+      transition:all .3s; width:100%; letter-spacing:.02em;
+      box-shadow:0 4px 20px var(--primary-glow);
+      animation:gradient-pulse 4s ease infinite;
+      background-size:200% 200%;
+    }
+    @keyframes gradient-pulse { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+    .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 32px var(--primary-glow); }
+    .btn-primary:active { transform:translateY(0); }
+    .btn-primary:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+
+    .btn-secondary {
+      background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--text-gray);
+      padding:.75rem 1.25rem; border-radius:var(--r-sm); font-size:.875rem; font-weight:600;
+      cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:.5rem; transition:all .2s;
+    }
+    .btn-secondary:hover { background:var(--bg-hover); color:var(--text-bright); border-color:var(--border-s); }
+
+    .auth-err { background:var(--danger-bg); border:1px solid rgba(248,113,113,.3); color:var(--danger); padding:.75rem 1rem; border-radius:var(--r-sm); font-size:.8rem; margin-bottom:1rem; display:none; }
+    .auth-err.show { display:block; }
+
+    .demo-presets { margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--border); }
+    .demo-title { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--text-muted); display:flex; align-items:center; gap:.4rem; margin-bottom:.75rem; }
+    .demo-grid { display:flex; flex-direction:column; gap:.5rem; }
+    .demo-btn {
+      background:rgba(168,85,247,.04); border:1px solid var(--border);
+      padding:.75rem 1rem; border-radius:var(--r-sm); text-align:left;
+      display:flex; align-items:center; gap:.75rem; cursor:pointer;
+      transition:all .2s; color:var(--text-dark);
+    }
+    .demo-btn:hover { background:rgba(168,85,247,.12); border-color:var(--primary); transform:translateX(3px); }
+    .demo-btn-icon { font-size:1.1rem; }
+    .demo-btn strong { font-size:.85rem; font-weight:700; display:block; }
+    .demo-btn span { font-size:.72rem; color:var(--text-muted); }
+
+    .auth-form-panel { display:none; }
+    .auth-form-panel.active { display:block; }
+
+    /* ============================================================ APP LAYOUT */
+    #view-student, #view-warden {
+      min-height:100vh; flex-direction:row;
+    }
+    .sidebar {
+      width:var(--sidebar); background:linear-gradient(180deg,rgba(19,19,46,.98) 0%,rgba(13,13,43,.99) 100%);
+      backdrop-filter:blur(20px); border-right:1px solid var(--border);
+      display:flex; flex-direction:column; padding:1.5rem 1rem;
+      flex-shrink:0; position:relative; overflow-y:auto; min-height:100vh;
+    }
+    .sidebar::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--primary),transparent); }
+    .sidebar-logo { display:flex; align-items:center; gap:.75rem; padding:.5rem .75rem 1.5rem; margin-bottom:.5rem; border-bottom:1px solid var(--border); }
+    .logo-icon {
+      width:36px; height:36px; border-radius:10px;
+      background:linear-gradient(135deg,#9333ea,#22d3ee);
+      display:flex; align-items:center; justify-content:center; font-size:1rem; color:white;
+      box-shadow:0 4px 12px var(--primary-glow);
+    }
+    .logo-text { font-size:1.25rem; font-weight:800; letter-spacing:-.03em; background:linear-gradient(135deg,var(--text-bright),var(--primary)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .sidebar-label { font-size:.65rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); padding:.5rem .75rem .25rem; margin-top:.75rem; }
+    .nav-list { list-style:none; display:flex; flex-direction:column; gap:.25rem; }
+    .nav-btn {
+      width:100%; display:flex; align-items:center; gap:.75rem;
+      padding:.7rem .875rem; border-radius:var(--r-sm); background:transparent;
+      border:none; color:var(--text-gray); font-size:.875rem; font-weight:500;
+      cursor:pointer; transition:all .2s; text-align:left;
+    }
+    .nav-btn:hover { background:rgba(168,85,247,.08); color:var(--text-dark); }
+    .nav-btn.active { background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(34,211,238,.05)); color:var(--text-bright); border-left:2px solid var(--primary); }
+    .nav-btn i { width:18px; text-align:center; }
+    .sidebar-bottom { margin-top:auto; padding-top:1rem; border-top:1px solid var(--border); }
+    .user-chip { display:flex; align-items:center; gap:.75rem; padding:.75rem; border-radius:var(--r-sm); background:rgba(168,85,247,.07); border:1px solid var(--border); margin-bottom:.75rem; }
+    .avatar { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,#9333ea,#22d3ee); display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:700; color:white; flex-shrink:0; }
+    .user-info-name { font-size:.8rem; font-weight:600; color:var(--text-bright); }
+    .user-info-role { font-size:.7rem; color:var(--text-muted); }
+    .btn-logout { width:100%; background:rgba(248,113,113,.08); border:1px solid rgba(248,113,113,.2); color:var(--danger); padding:.625rem 1rem; border-radius:var(--r-sm); font-size:.8rem; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:.5rem; transition:all .2s; }
+    .btn-logout:hover { background:var(--danger-bg); border-color:var(--danger); }
+
+    /* Main content */
+    .main-content { flex:1; display:flex; flex-direction:column; padding:2rem 2.5rem; overflow-y:auto; }
+
+    /* Page sections */
+    .page-section { display:none; animation:fade-up .3s ease; }
+    .page-section.active { display:block; }
+
+    /* ============================================================ CARDS & STATS */
+    .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:2rem; }
+    .stat-card {
+      background:var(--bg-glass); backdrop-filter:blur(12px);
+      border:1px solid var(--border); border-radius:var(--r-lg);
+      padding:1.5rem; display:flex; align-items:center; gap:1.25rem;
+      transition:all .3s; position:relative; overflow:hidden;
+    }
+    .stat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--primary),transparent); opacity:0; transition:opacity .3s; }
+    .stat-card:hover { border-color:var(--border-s); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,.4); }
+    .stat-card:hover::before { opacity:1; }
+    .stat-icon { width:50px; height:50px; border-radius:var(--r-md); display:flex; align-items:center; justify-content:center; font-size:1.25rem; flex-shrink:0; }
+    .stat-icon.purple { background:var(--primary-ring); color:var(--primary); }
+    .stat-icon.green  { background:var(--success-bg); color:var(--success); }
+    .stat-icon.red    { background:var(--danger-bg); color:var(--danger); }
+    .stat-icon.yellow { background:var(--warning-bg); color:var(--warning); }
+    .stat-icon.blue   { background:var(--info-bg); color:var(--info); }
+    .stat-info h3 { font-size:.7rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.08em; margin-bottom:.25rem; }
+    .stat-info p { font-size:2rem; font-weight:800; color:var(--text-bright); letter-spacing:-.03em; line-height:1; }
+
+    /* Section header */
+    .sec-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; }
+    .sec-title { font-size:1.125rem; font-weight:700; color:var(--text-bright); display:flex; align-items:center; gap:.6rem; }
+    .live-dot { width:8px; height:8px; border-radius:50%; background:var(--primary); box-shadow:0 0 8px var(--primary-glow); animation:pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:.7} }
+
+    /* Page header */
+    .page-header { margin-bottom:2rem; }
+    .page-header h1 { font-size:1.75rem; font-weight:800; letter-spacing:-.03em; color:var(--text-bright); }
+    .page-header-tags { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.75rem; }
+    .tag { display:inline-flex; align-items:center; gap:.4rem; font-size:.75rem; color:var(--text-gray); background:var(--bg-card); border:1px solid var(--border); padding:.3rem .7rem; border-radius:100px; }
+    .tag i { color:var(--primary); font-size:.7rem; }
+    .page-header-row { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; }
+
+    /* ============================================================ COMPLAINT CARDS */
+    .cards-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(360px,1fr)); gap:1rem; }
+    .c-card {
+      background:var(--bg-glass); backdrop-filter:blur(12px);
+      border:1px solid var(--border); border-radius:var(--r-lg);
+      padding:1.5rem; display:flex; flex-direction:column;
+      transition:all .3s; position:relative; overflow:hidden;
+    }
+    .c-card::after { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:linear-gradient(180deg,var(--primary),var(--accent)); opacity:0; transition:opacity .3s; }
+    .c-card:hover { border-color:var(--border-s); transform:translateY(-2px); box-shadow:0 8px 32px rgba(0,0,0,.4); }
+    .c-card:hover::after { opacity:1; }
+    .c-card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem; }
+    .c-meta { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; margin-bottom:.6rem; }
+    .ticket-tag { font-size:.7rem; font-weight:700; letter-spacing:.05em; color:var(--primary); background:var(--primary-ring); padding:.2rem .5rem; border-radius:4px; border:1px solid rgba(168,85,247,.2); font-family:monospace; }
+    .badge { padding:.25rem .6rem; border-radius:100px; font-size:.7rem; font-weight:700; display:inline-flex; align-items:center; gap:.35rem; }
+    .badge-submitted { color:var(--text-gray); background:rgba(255,255,255,.06); }
+    .badge-review    { color:var(--warning); background:var(--warning-bg); border:1px solid rgba(251,191,36,.2); }
+    .badge-assigned, .badge-progress { color:var(--info); background:var(--info-bg); border:1px solid rgba(96,165,250,.2); }
+    .badge-resolved, .badge-closed { color:var(--success); background:var(--success-bg); border:1px solid rgba(52,211,153,.2); }
+    .badge-escalated { color:var(--danger); background:var(--danger-bg); border:1px solid rgba(248,113,113,.2); animation:badge-blink 1.5s ease infinite; }
+    @keyframes badge-blink { 0%,100%{opacity:1} 50%{opacity:.6} }
+    .prio-badge { font-size:.68rem; font-weight:700; padding:.2rem .5rem; border-radius:4px; text-transform:uppercase; letter-spacing:.05em; }
+    .prio-high,.prio-critical { color:var(--danger); background:var(--danger-bg); }
+    .prio-medium { color:var(--warning); background:var(--warning-bg); }
+    .prio-low    { color:var(--success); background:var(--success-bg); }
+    .c-title { font-size:1rem; font-weight:700; color:var(--text-bright); line-height:1.3; }
+    .c-desc { font-size:.875rem; color:var(--text-gray); line-height:1.6; margin:1rem 0; flex:1; }
+    .c-details { display:flex; flex-direction:column; gap:.5rem; margin-bottom:1.25rem; }
+    .c-detail { display:flex; align-items:center; gap:.6rem; font-size:.8rem; color:var(--text-gray); }
+    .c-detail i { color:var(--primary); width:14px; font-size:.75rem; }
+    .tech-pill { display:flex; align-items:center; gap:.6rem; font-size:.8rem; color:var(--accent); background:var(--accent-glow); padding:.5rem .75rem; border-radius:var(--r-sm); border:1px solid rgba(34,211,238,.2); margin-top:.25rem; }
+    .c-actions { display:flex; gap:.6rem; border-top:1px solid var(--border); padding-top:1rem; margin-top:auto; }
+    .c-btn { flex:1; background:rgba(255,255,255,.03); border:1px solid var(--border); color:var(--text-gray); padding:.5rem; border-radius:var(--r-sm); font-size:.75rem; font-weight:600; cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:.4rem; }
+    .c-btn:hover { background:var(--bg-hover); color:var(--text-bright); border-color:var(--border-s); }
+    .c-btn.danger { color:var(--danger); border-color:rgba(248,113,113,.25); }
+    .c-btn.danger:hover { background:var(--danger-bg); border-color:var(--danger); }
+    .c-btn.primary:hover { color:var(--primary); border-color:var(--primary); }
+    .resolve-box { background:rgba(52,211,153,.07); border:1px solid rgba(52,211,153,.25); border-radius:var(--r-sm); padding:1rem; margin-top:.75rem; }
+    .resolve-box p { font-size:.8rem; color:var(--success); margin-bottom:.6rem; display:flex; gap:.5rem; align-items:center; }
+    .btn-confirm { background:linear-gradient(135deg,#059669,#34d399); border:none; color:white; padding:.5rem 1rem; border-radius:var(--r-sm); font-size:.75rem; font-weight:700; cursor:pointer; transition:all .2s; }
+    .btn-confirm:hover { box-shadow:0 4px 16px rgba(52,211,153,.3); }
+
+    .empty-state { text-align:center; padding:4rem 2rem; border:1px dashed var(--border); border-radius:var(--r-lg); background:rgba(168,85,247,.02); }
+    .empty-state i { font-size:3rem; color:var(--text-muted); margin-bottom:1rem; display:block; }
+    .empty-state h3 { font-size:1.125rem; color:var(--text-dark); margin-bottom:.4rem; }
+    .empty-state p { font-size:.875rem; color:var(--text-gray); }
+
+    /* ============================================================ WIZARD */
+    .wizard-wrap { max-width:720px; margin:0 auto; width:100%; }
+    .wizard-progress { height:3px; background:var(--border); border-radius:100px; margin-bottom:2rem; overflow:hidden; }
+    .wizard-fill { height:100%; background:linear-gradient(90deg,var(--primary),var(--accent)); border-radius:100px; transition:width .5s ease; }
+    .wizard-card { background:var(--bg-glass); backdrop-filter:blur(16px); border:1px solid var(--border); border-radius:var(--r-xl); padding:2.5rem; }
+    .wizard-step-label { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:var(--primary); margin-bottom:.4rem; }
+    .wizard-step-title { font-size:1.5rem; font-weight:800; color:var(--text-bright); margin-bottom:1.5rem; }
+    .cat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:.75rem; }
+    .cat-tile {
+      background:rgba(168,85,247,.04); border:1px solid var(--border);
+      border-radius:var(--r-md); padding:1.25rem 1rem; text-align:center;
+      cursor:pointer; transition:all .2s; display:flex; flex-direction:column; align-items:center; gap:.6rem;
+    }
+    .cat-tile:hover, .cat-tile.sel { background:rgba(168,85,247,.12); border-color:var(--primary); box-shadow:0 0 16px var(--primary-ring); }
+    .cat-icon { font-size:1.75rem; background:linear-gradient(135deg,var(--primary),var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .cat-tile strong { font-size:.85rem; font-weight:700; color:var(--text-bright); }
+    .cat-tile span { font-size:.72rem; color:var(--text-muted); }
+    .wiz-footer { display:flex; justify-content:space-between; align-items:center; margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--border); }
+    .summary-box { background:rgba(168,85,247,.06); border:1px solid var(--border-s); border-radius:var(--r-md); padding:1.5rem; }
+    .sum-row { display:flex; justify-content:space-between; align-items:center; padding:.6rem 0; border-bottom:1px solid var(--border); }
+    .sum-row:last-child { border-bottom:none; }
+    .sum-key { font-size:.75rem; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
+    .sum-val { font-size:.9rem; color:var(--text-bright); font-weight:600; }
+
+    /* ============================================================ WARDEN TABLE */
+    .table-wrap { background:var(--bg-glass); backdrop-filter:blur(12px); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; }
+    .table-head-row { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.25rem; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:.75rem; }
+    .filter-tabs { display:flex; gap:.25rem; }
+    .ft { padding:.4rem .875rem; border-radius:100px; border:none; background:transparent; color:var(--text-muted); font-size:.8rem; font-weight:600; cursor:pointer; transition:all .2s; }
+    .ft:hover { color:var(--text-dark); background:rgba(255,255,255,.04); }
+    .ft.active { background:var(--primary); color:white; box-shadow:0 4px 12px var(--primary-glow); }
+    .cat-filter { background:var(--bg-card); border:1px solid var(--border); color:var(--text-dark); padding:.4rem .75rem; border-radius:var(--r-sm); font-size:.8rem; outline:none; }
+    .cat-filter option { background:var(--bg-card); }
+    .tbl { width:100%; border-collapse:collapse; }
+    .tbl th { background:rgba(168,85,247,.08); color:var(--text-muted); font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em; padding:.875rem 1rem; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
+    .tbl td { padding:.875rem 1rem; border-bottom:1px solid var(--border); font-size:.875rem; color:var(--text-gray); vertical-align:middle; }
+    .tbl tr:last-child td { border-bottom:none; }
+    .tbl tbody tr { transition:background .2s; }
+    .tbl tbody tr:hover { background:rgba(168,85,247,.04); }
+    .btn-manage { background:rgba(168,85,247,.1); border:1px solid var(--border-s); color:var(--primary); padding:.375rem .75rem; border-radius:var(--r-sm); font-size:.75rem; font-weight:600; cursor:pointer; transition:all .2s; display:inline-flex; align-items:center; gap:.4rem; }
+    .btn-manage:hover { background:rgba(168,85,247,.2); }
+    .alert-banner { background:var(--danger-bg); border:1px solid rgba(248,113,113,.3); border-radius:var(--r-md); padding:1rem 1.25rem; margin-bottom:1.5rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+    .alert-banner i { color:var(--danger); font-size:1.25rem; flex-shrink:0; }
+    .alert-banner span { color:var(--danger); font-size:.9rem; font-weight:600; }
+    .alert-banner small { color:rgba(248,113,113,.7); font-size:.8rem; display:block; }
+
+    /* ============================================================ MODALS */
+    .modal-overlay { position:fixed; inset:0; background:rgba(7,7,26,.85); backdrop-filter:blur(8px); z-index:999; display:none; align-items:center; justify-content:center; padding:2rem; }
+    .modal-overlay.open { display:flex; }
+    .modal-box { background:var(--bg-card); border:1px solid var(--border-s); border-radius:var(--r-xl); width:100%; max-width:600px; max-height:90vh; overflow-y:auto; box-shadow:0 32px 64px rgba(0,0,0,.8); animation:modal-in .25s ease; }
+    .modal-header { padding:1.75rem 2rem 0; display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1.5rem; }
+    .modal-header h2 { font-size:1.375rem; font-weight:800; color:var(--text-bright); letter-spacing:-.02em; }
+    .modal-header p { font-size:.8rem; color:var(--text-gray); margin-top:.25rem; }
+    .modal-body { padding:0 2rem 1.5rem; }
+    .modal-footer { padding:1.25rem 2rem; border-top:1px solid var(--border); display:flex; gap:.75rem; justify-content:flex-end; align-items:center; }
+    .btn-x { width:34px; height:34px; background:rgba(255,255,255,.05); border:1px solid var(--border); border-radius:50%; color:var(--text-gray); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; font-size:.9rem; flex-shrink:0; }
+    .btn-x:hover { background:var(--danger-bg); color:var(--danger); border-color:var(--danger); }
+    .btn-danger { background:var(--danger); border:none; color:white; padding:.875rem 1.5rem; border-radius:var(--r-sm); font-size:.875rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:.5rem; transition:all .2s; }
+    .btn-danger:hover { background:#dc2626; box-shadow:0 4px 16px rgba(248,113,113,.3); }
+    .btn-success { background:linear-gradient(135deg,#059669,#34d399); border:none; color:white; padding:.875rem 1.5rem; border-radius:var(--r-sm); font-size:.875rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:.5rem; transition:all .2s; }
+    .btn-success:hover { box-shadow:0 4px 16px rgba(52,211,153,.3); }
+
+    /* Timeline */
+    .tech-box { background:rgba(34,211,238,.06); border:1px solid rgba(34,211,238,.2); border-radius:var(--r-md); padding:1.25rem; display:flex; align-items:center; gap:1rem; margin-bottom:1.25rem; }
+    .tech-avatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#9333ea,#22d3ee); display:flex; align-items:center; justify-content:center; font-size:.875rem; font-weight:700; color:white; flex-shrink:0; }
+    .tech-name { font-size:.95rem; font-weight:700; color:var(--text-bright); }
+    .tech-spec { font-size:.8rem; color:var(--text-gray); }
+    .eta-row { background:var(--warning-bg); border:1px solid rgba(251,191,36,.25); border-radius:var(--r-sm); padding:.75rem 1rem; display:flex; align-items:center; gap:.75rem; margin-bottom:1.5rem; }
+    .eta-row i { color:var(--warning); }
+    .eta-row span { font-size:.875rem; color:var(--warning); font-weight:600; }
+    .tl-list { display:flex; flex-direction:column; gap:1.5rem; }
+    .tl-node { display:flex; gap:1.25rem; position:relative; }
+    .tl-node::before { content:''; position:absolute; left:17px; top:36px; bottom:-1.5rem; width:2px; background:linear-gradient(180deg,var(--border-s),transparent); }
+    .tl-node:last-child::before { display:none; }
+    .tl-icon { width:36px; height:36px; border-radius:50%; background:var(--bg-main); border:2px solid var(--border); display:flex; align-items:center; justify-content:center; z-index:2; color:var(--text-muted); font-size:.8rem; flex-shrink:0; }
+    .tl-node.cur .tl-icon { border-color:var(--primary); background:rgba(168,85,247,.15); color:var(--primary); box-shadow:0 0 12px var(--primary-ring); }
+    .tl-card { flex:1; background:rgba(255,255,255,.02); border:1px solid var(--border); border-radius:var(--r-md); padding:1rem 1.25rem; }
+    .tl-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:.4rem; font-size:.8rem; }
+    .tl-meta strong { color:var(--text-bright); }
+    .tl-meta span { color:var(--text-muted); }
+    .tl-body { font-size:.8rem; color:var(--text-gray); margin-bottom:.4rem; line-height:1.5; }
+    .tl-author { font-size:.7rem; color:var(--primary); }
+
+    /* Star rating */
+    .stars { display:flex; gap:.35rem; margin:.75rem 0; }
+    .star-btn { background:none; border:none; font-size:1.375rem; cursor:pointer; color:var(--text-muted); transition:all .2s; }
+    .star-btn:hover, .star-btn.on { color:var(--warning); transform:scale(1.15); }
+
+    /* ============================================================ TOAST */
+    #toast-wrap { position:fixed; bottom:2rem; right:2rem; z-index:9999; display:flex; flex-direction:column; gap:.75rem; }
+    .toast { background:rgba(19,19,46,.95); backdrop-filter:blur(12px); border:1px solid var(--border-s); border-left:4px solid var(--primary); padding:1rem 1.25rem; border-radius:var(--r-md); box-shadow:0 16px 32px rgba(0,0,0,.5); display:flex; gap:.875rem; align-items:flex-start; min-width:280px; max-width:360px; animation:slide-in .3s ease; color:var(--text-dark); }
+    .toast.success { border-left-color:var(--success); }
+    .toast.warning { border-left-color:var(--warning); }
+    .toast.danger  { border-left-color:var(--danger); }
+    .toast strong { font-size:.875rem; font-weight:700; display:block; color:var(--text-bright); }
+    .toast p { font-size:.8rem; color:var(--text-gray); margin-top:.2rem; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width:6px; height:6px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:rgba(168,85,247,.3); border-radius:3px; }
+    ::-webkit-scrollbar-thumb:hover { background:var(--primary); }
+
+    .hidden { display:none !important; }
+    .text-danger { color:var(--danger); }
+    .text-success { color:var(--success); }
+    .text-primary { color:var(--primary); }
+
+    select.form-control { cursor:pointer; }
+    textarea.form-control { resize:vertical; min-height:80px; }
+  </style>
 </head>
 <body>
 
+<div id="toast-wrap"></div>
 <div id="app">
-  <!-- Top Navigation Header -->
-  <header class="vufix-nav">
-    <div class="nav-container">
-      <a href="#" class="brand-logo" id="btn-brand-home">
-        <div class="logo-badge">VX</div>
-        <div class="logo-text">
-          <h1>VUFIX</h1>
-          <p>Vijaybhoomi Maintenance Portal</p>
-        </div>
-      </a>
 
-      <div class="nav-actions">
-        <!-- Quick Profile Switcher Dropdown -->
-        <div class="preset-switcher-dropdown">
-          <button class="btn-preset-selector" id="btn-user-dropdown" title="Switch User Profile">
-            <div class="user-avatar-badge" id="nav-user-avatar">AS</div>
-            <span id="nav-user-name">Aryaman Saboo</span>
-            <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem;"></i>
-          </button>
+<!-- ================================================================
+     LOGIN PAGE
+     ================================================================ -->
+<div id="view-auth" class="view active">
+  <div class="auth-card">
+    <div class="auth-logo-wrap">
+      <div class="auth-logo-icon"><i class="fa-solid fa-bolt"></i></div>
+      <h1>VUFIX</h1>
+      <p>Hostel Maintenance &amp; Complaint Management System</p>
+      <p style="margin-top:.35rem;font-size:.72rem;color:var(--text-muted);">Vijaybhoomi University · Hostel A</p>
+    </div>
 
-          <div class="preset-menu" id="user-preset-menu">
-            <div class="preset-menu-header">Quick Switch Preset Profile</div>
-            <button class="preset-option" data-userid="usr_aryaman">
-              <div class="user-avatar-badge">AS</div>
-              <div class="preset-opt-details">
-                <strong>Aryaman Saboo (Student)</strong>
-                <span>Hostel A, Room B3-304</span>
-              </div>
-            </button>
-            <button class="preset-option" data-userid="usr_parth">
-              <div class="user-avatar-badge" style="background: #374151;">PP</div>
-              <div class="preset-opt-details">
-                <strong>Parth Pawar (Student)</strong>
-                <span>Hostel A, Room A1-101</span>
-              </div>
-            </button>
-            <button class="preset-option" data-userid="usr_rinu">
-              <div class="user-avatar-badge" style="background: #1d4ed8;">RB</div>
-              <div class="preset-opt-details">
-                <strong>Rinu Babu (Hostel Warden)</strong>
-                <span>ADM-WARDEN-01</span>
-              </div>
-            </button>
-            <div style="border-top: 1px solid var(--border-subtle); margin-top: 0.35rem; padding-top: 0.35rem;">
-              <button class="preset-option" id="btn-nav-logout" style="color: #f87171;">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <strong>Log Out</strong>
-              </button>
-            </div>
-          </div>
-        </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="student"><i class="fa-solid fa-user-graduate"></i> Student</button>
+      <button class="auth-tab" data-tab="signup"><i class="fa-solid fa-user-plus"></i> Register</button>
+      <button class="auth-tab" data-tab="warden"><i class="fa-solid fa-shield-halved"></i> Warden</button>
+    </div>
 
-        <!-- Notification Bell Icon -->
-        <button class="btn-icon-nav" id="btn-notifications" title="Notifications">
-          <i class="fa-regular fa-bell"></i>
-          <span class="notif-badge" id="notif-unread-dot" style="display: none;"></span>
+    <!-- STUDENT LOGIN -->
+    <div id="tab-student" class="auth-form-panel active">
+      <div class="auth-err" id="err-student">Invalid email or password.</div>
+      <div class="form-group">
+        <label class="form-label">Email / Roll Number</label>
+        <input class="form-control" id="s-email" type="text" placeholder="aryaman.saboo@vijaybhoomi.edu.in" value="aryaman.saboo@vijaybhoomi.edu.in">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-control" id="s-pass" type="password" placeholder="••••••••" value="password123">
+      </div>
+      <button class="btn-primary" id="btn-student-login"><i class="fa-solid fa-right-to-bracket"></i> Login as Student</button>
+    </div>
+
+    <!-- STUDENT SIGNUP -->
+    <div id="tab-signup" class="auth-form-panel">
+      <div class="auth-err" id="err-signup">Please fill all fields.</div>
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input class="form-control" id="r-name" placeholder="Your full name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Roll Number</label>
+        <input class="form-control" id="r-roll" placeholder="e.g. ST20230099">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-control" id="r-email" type="email" placeholder="name@vijaybhoomi.edu.in">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Hostel</label>
+        <select class="form-control" id="r-hostel">
+          <option>Hostel A</option>
+          <option>Hostel B</option>
+          <option>Hostel C</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Room Number</label>
+        <input class="form-control" id="r-room" placeholder="e.g. B2-201">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-control" id="r-pass" type="password" placeholder="••••••••">
+      </div>
+      <button class="btn-primary" id="btn-signup"><i class="fa-solid fa-user-plus"></i> Create Account</button>
+    </div>
+
+    <!-- WARDEN LOGIN -->
+    <div id="tab-warden" class="auth-form-panel">
+      <div class="auth-err" id="err-warden">Invalid Admin ID or password.</div>
+      <div class="form-group">
+        <label class="form-label">Admin ID</label>
+        <input class="form-control" id="w-id" placeholder="ADM-WARDEN-01" value="ADM-WARDEN-01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-control" id="w-pass" type="password" placeholder="••••••••" value="admin123">
+      </div>
+      <button class="btn-primary" id="btn-warden-login"><i class="fa-solid fa-shield-halved"></i> Login as Warden</button>
+    </div>
+
+    <!-- DEMO PRESETS -->
+    <div class="demo-presets">
+      <div class="demo-title"><i class="fa-solid fa-bolt"></i> Quick Demo Access</div>
+      <div class="demo-grid">
+        <button class="demo-btn" data-demo="student">
+          <span class="demo-btn-icon" style="color:#a855f7"><i class="fa-solid fa-user-graduate"></i></span>
+          <div><strong>Aryaman Saboo</strong><span>Student · Hostel A, Block B3, Room B3-304</span></div>
         </button>
-
-        <!-- UX Research Toggle Button -->
-        <button class="btn-outline-sm" id="btn-toggle-research">
-          <i class="fa-solid fa-file-contract"></i>
-          <span>UX Research</span>
+        <button class="demo-btn" data-demo="parth">
+          <span class="demo-btn-icon" style="color:#60a5fa"><i class="fa-solid fa-user"></i></span>
+          <div><strong>Parth Pawar</strong><span>Student · Hostel A, Block A1, Room A1-101</span></div>
+        </button>
+        <button class="demo-btn" data-demo="warden">
+          <span class="demo-btn-icon" style="color:#34d399"><i class="fa-solid fa-shield-halved"></i></span>
+          <div><strong>Rinu Babu</strong><span>Hostel Warden · ADM-WARDEN-01</span></div>
         </button>
       </div>
     </div>
-  </header>
+  </div>
+</div>
 
-  <!-- Main View Router Container -->
-  <main class="main-view-container">
-
-    <!-- ==========================================================================
-         VIEW 1: FRETBOX-INSPIRED TABBED AUTHENTICATION HUB
-         ========================================================================== -->
-    <section id="view-auth" class="auth-hero-wrapper" style="display: none;">
-      <div class="auth-header-card">
-        <div class="auth-brand-icon">
-          <i class="fa-solid fa-screwdriver-wrench"></i>
-        </div>
-        <h2>Welcome to VUFIX</h2>
-        <p>Transparent Hostel Maintenance & Complaint Management System for Vijaybhoomi University</p>
-      </div>
-
-      <!-- Quick Fill Demo Preset Box -->
-      <div class="quick-demo-container">
-        <div class="quick-demo-title">
-          <i class="fa-solid fa-bolt"></i>
-          <span>One-Click Demo Quick Fill Profiles</span>
-        </div>
-        <div class="quick-preset-btns">
-          <button class="btn-preset-quick" data-demo="usr_aryaman">
-            <div>
-              <strong>Quick Fill — Aryaman Saboo (Student)</strong>
-              <span>ST20230042 · Room B3-304</span>
-            </div>
-            <span class="preset-chip">Student</span>
-          </button>
-          <button class="btn-preset-quick" data-demo="usr_rinu">
-            <div>
-              <strong>Quick Fill — Rinu Babu (Hostel Warden)</strong>
-              <span>ADM-WARDEN-01 · Hostel Warden</span>
-            </div>
-            <span class="preset-chip">Warden</span>
-          </button>
-          <button class="btn-preset-quick" data-demo="usr_parth">
-            <div>
-              <strong>Quick Fill — Parth Pawar (Student)</strong>
-              <span>ST20230088 · Room A1-101</span>
-            </div>
-            <span class="preset-chip">Student</span>
-          </button>
+<!-- ================================================================
+     STUDENT PORTAL
+     ================================================================ -->
+<div id="view-student" class="view">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><i class="fa-solid fa-bolt"></i></div>
+      <span class="logo-text">VUFIX</span>
+    </div>
+    <span class="sidebar-label">Navigation</span>
+    <ul class="nav-list">
+      <li><button class="nav-btn active" data-section="s-home"><i class="fa-solid fa-house"></i> Command Center</button></li>
+      <li><button class="nav-btn" data-section="s-new"><i class="fa-solid fa-circle-plus"></i> New Complaint</button></li>
+      <li><button class="nav-btn" data-section="s-track"><i class="fa-solid fa-list-check"></i> Track Complaints</button></li>
+    </ul>
+    <div class="sidebar-bottom">
+      <div class="user-chip">
+        <div class="avatar" id="s-avatar">AS</div>
+        <div>
+          <div class="user-info-name" id="s-uname">Aryaman Saboo</div>
+          <div class="user-info-role">Student</div>
         </div>
       </div>
+      <button class="btn-logout" id="btn-s-logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+    </div>
+  </aside>
 
-      <!-- Tab Switcher -->
-      <div class="glass-card">
-        <div class="auth-tabs">
-          <button class="auth-tab-btn active" data-tab="student-login">Student Login</button>
-          <button class="auth-tab-btn" data-tab="student-signup">Student Sign Up</button>
-          <button class="auth-tab-btn" data-tab="warden-login">Warden / Admin</button>
+  <main class="main-content">
+    <!-- HOME SECTION -->
+    <div id="s-home" class="page-section active">
+      <div class="page-header">
+        <div class="page-header-row">
+          <div>
+            <h1 id="s-welcome">Welcome back, Aryaman 👋</h1>
+            <div class="page-header-tags" id="s-tags"></div>
+          </div>
+          <button class="btn-primary" id="btn-new-complaint" style="width:auto;white-space:nowrap"><i class="fa-solid fa-plus"></i> Report Issue</button>
         </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon purple"><i class="fa-solid fa-tags"></i></div>
+          <div class="stat-info"><h3>Active Requests</h3><p id="st-active">0</p></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="stat-info"><h3>Resolved</h3><p id="st-resolved">0</p></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon red"><i class="fa-solid fa-radiation"></i></div>
+          <div class="stat-info"><h3>Escalated</h3><p id="st-escalated">0</p></div>
+        </div>
+      </div>
+      <div class="sec-head">
+        <div class="sec-title"><div class="live-dot"></div> Live Active Feed</div>
+        <span id="s-view-all" style="font-size:.8rem;color:var(--primary);cursor:pointer;font-weight:600;">View All</span>
+      </div>
+      <div class="cards-grid" id="s-feed"></div>
+    </div>
 
-        <!-- Student Login Form -->
-        <form id="form-student-login" class="auth-form">
-          <div class="form-group">
-            <label for="login-email">Email or Roll Number</label>
-            <input type="text" id="login-email" class="form-control" placeholder="e.g. aryaman.saboo@vijaybhoomi.edu.in or ST20230042" required value="aryaman.saboo@vijaybhoomi.edu.in">
+    <!-- NEW COMPLAINT SECTION -->
+    <div id="s-new" class="page-section">
+      <div class="page-header"><h1>Report Maintenance Issue</h1></div>
+      <div class="wizard-wrap">
+        <div class="wizard-progress"><div class="wizard-fill" id="wiz-progress" style="width:33%"></div></div>
+        <div class="wizard-card">
+          <!-- Step 1: Category -->
+          <div id="wiz-1">
+            <div class="wizard-step-label">Step 1 of 3</div>
+            <div class="wizard-step-title">Select Issue Category</div>
+            <div class="cat-grid" id="cat-grid">
+              <div class="cat-tile sel" data-cat="Electrical"><div class="cat-icon"><i class="fa-solid fa-bolt"></i></div><strong>Electrical</strong><span>Fan, Light, Socket</span></div>
+              <div class="cat-tile" data-cat="Plumbing"><div class="cat-icon"><i class="fa-solid fa-faucet-drip"></i></div><strong>Plumbing</strong><span>Tap, Leakage, Flush</span></div>
+              <div class="cat-tile" data-cat="Furniture"><div class="cat-icon"><i class="fa-solid fa-chair"></i></div><strong>Furniture</strong><span>Bed, Table, Chair</span></div>
+              <div class="cat-tile" data-cat="IT/Network"><div class="cat-icon"><i class="fa-solid fa-wifi"></i></div><strong>Internet / WiFi</strong><span>Router, LAN Port</span></div>
+              <div class="cat-tile" data-cat="Housekeeping"><div class="cat-icon"><i class="fa-solid fa-broom"></i></div><strong>Housekeeping</strong><span>Cleaning, Trash</span></div>
+              <div class="cat-tile" data-cat="Civil/Structure"><div class="cat-icon"><i class="fa-solid fa-building"></i></div><strong>Civil / Structure</strong><span>Wall, Door, Window</span></div>
+            </div>
+            <div class="wiz-footer">
+              <span></span>
+              <button class="btn-primary" id="wiz-next-1" style="width:auto"><span>Continue</span> <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="login-password">Password</label>
-            <input type="password" id="login-password" class="form-control" placeholder="••••••••" required value="password123">
-          </div>
-          <button type="submit" class="btn-submit-primary">
-            <span>Login as Student</span>
-            <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </form>
 
-        <!-- Student Sign Up Form -->
-        <form id="form-student-signup" class="auth-form" style="display: none;">
-          <div class="form-group">
-            <label for="signup-name">Full Name</label>
-            <input type="text" id="signup-name" class="form-control" placeholder="e.g. Ananya Sharma" required>
-          </div>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label for="signup-roll">Roll Number</label>
-              <input type="text" id="signup-roll" class="form-control" placeholder="ST20230099" required>
-            </div>
-            <div class="form-group">
-              <label for="signup-email">University Email</label>
-              <input type="email" id="signup-email" class="form-control" placeholder="name@vijaybhoomi.edu.in" required>
-            </div>
-          </div>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label for="signup-hostel">Hostel Block</label>
-              <select id="signup-hostel" class="form-control">
-                <option value="Hostel A">Hostel A</option>
-                <option value="Hostel B">Hostel B</option>
-                <option value="Girls Hostel C">Girls Hostel C</option>
+          <!-- Step 2: Details -->
+          <div id="wiz-2" class="hidden">
+            <div class="wizard-step-label">Step 2 of 3</div>
+            <div class="wizard-step-title">Describe the Problem</div>
+            <div class="form-group"><label class="form-label">Issue Title <span class="text-danger">*</span></label><input class="form-control" id="wiz-title" placeholder="Brief summary, e.g. Fan making grinding noise"></div>
+            <div class="form-group"><label class="form-label">Detailed Description <span class="text-danger">*</span></label><textarea class="form-control" id="wiz-desc" rows="4" placeholder="Describe the issue in detail..."></textarea></div>
+            <div class="form-group"><label class="form-label">Sub-Category</label><input class="form-control" id="wiz-subcat" placeholder="e.g. Ceiling Fan / Regulator"></div>
+            <div class="form-group"><label class="form-label">Priority</label>
+              <select class="form-control" id="wiz-priority">
+                <option value="Low">Low — Non-urgent</option>
+                <option value="Medium" selected>Medium — Normal</option>
+                <option value="High">High — Urgent</option>
+                <option value="Critical">Critical — Immediate attention needed</option>
               </select>
             </div>
-            <div class="form-group">
-              <label for="signup-room">Room Number</label>
-              <input type="text" id="signup-room" class="form-control" placeholder="B3-304" required>
+            <div class="wiz-footer">
+              <button class="btn-secondary" id="wiz-back-2"><i class="fa-solid fa-arrow-left"></i> Back</button>
+              <button class="btn-primary" id="wiz-next-2" style="width:auto"><span>Continue</span> <i class="fa-solid fa-arrow-right"></i></button>
             </div>
           </div>
-          <div class="form-group">
-            <label for="signup-password">Create Password</label>
-            <input type="password" id="signup-password" class="form-control" placeholder="••••••••" required>
-          </div>
-          <button type="submit" class="btn-submit-primary">
-            <span>Register & Log In</span>
-            <i class="fa-solid fa-user-plus"></i>
-          </button>
-        </form>
 
-        <!-- Warden / Admin Login Form -->
-        <form id="form-warden-login" class="auth-form" style="display: none;">
-          <div class="form-group">
-            <label for="warden-admin-id">Admin ID or Email</label>
-            <input type="text" id="warden-admin-id" class="form-control" placeholder="ADM-WARDEN-01 or rinu.babu@vijaybhoomi.edu.in" required value="rinu.babu@vijaybhoomi.edu.in">
-          </div>
-          <div class="form-group">
-            <label for="warden-password">Admin Access Password</label>
-            <input type="password" id="warden-password" class="form-control" placeholder="••••••••" required value="admin123">
-          </div>
-          <button type="submit" class="btn-submit-primary">
-            <span>Login to Warden Dashboard</span>
-            <i class="fa-solid fa-shield-halved"></i>
-          </button>
-        </form>
-      </div>
-    </section>
-
-    <!-- ==========================================================================
-         VIEW 2: STUDENT MAINTENANCE PORTAL
-         ========================================================================== -->
-    <section id="view-student" style="display: none;">
-      <!-- Greeting & Info Header -->
-      <div class="student-portal-header">
-        <div class="welcome-title-group">
-          <h2>Welcome back, <span id="student-display-name">Aryaman Saboo</span></h2>
-          <div class="user-badges-row">
-            <div class="meta-badge">
-              <i class="fa-solid fa-id-card"></i>
-              <span id="student-badge-roll">ST20230042</span>
+          <!-- Step 3: Submit -->
+          <div id="wiz-3" class="hidden">
+            <div class="wizard-step-label">Step 3 of 3</div>
+            <div class="wizard-step-title">Confirm &amp; Submit</div>
+            <div class="form-group"><label class="form-label">Preferred Technician Visit Slot</label>
+              <select class="form-control" id="wiz-slot">
+                <option>Anytime</option>
+                <option>Morning (9AM - 12PM)</option>
+                <option>Afternoon (12PM - 4PM)</option>
+                <option>Evening (4PM - 7PM)</option>
+              </select>
             </div>
-            <div class="meta-badge">
-              <i class="fa-solid fa-bed"></i>
-              <span id="student-badge-room">Hostel A, Block B3, Room B3-304</span>
+            <div class="summary-box" id="wiz-summary" style="margin-top:1rem"></div>
+            <div style="background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2);border-radius:var(--r-sm);padding:1rem;margin-top:1rem;font-size:.8rem;color:var(--success)">
+              <i class="fa-solid fa-robot"></i> <strong>Auto-Assignment:</strong> A technician will be automatically assigned based on your issue category immediately after submission.
             </div>
-            <div class="meta-badge">
-              <i class="fa-solid fa-envelope"></i>
-              <span id="student-badge-email">aryaman.saboo@vijaybhoomi.edu.in</span>
+            <div class="wiz-footer">
+              <button class="btn-secondary" id="wiz-back-3"><i class="fa-solid fa-arrow-left"></i> Back</button>
+              <button class="btn-primary" id="wiz-submit" style="width:auto"><i class="fa-solid fa-paper-plane"></i> Submit Complaint</button>
             </div>
           </div>
         </div>
-
-        <button class="btn-cta-create" id="btn-open-complaint-wizard">
-          <i class="fa-solid fa-plus"></i>
-          <span>File New Complaint</span>
-        </button>
       </div>
+    </div>
 
-      <!-- Summary Stat Cards -->
-      <div class="stats-cards-grid">
-        <div class="stat-card" style="--stat-color: var(--primary-500);">
-          <div class="stat-icon-wrapper">
-            <i class="fa-solid fa-clock-rotate-left"></i>
-          </div>
-          <div class="stat-info">
-            <h4>Active Requests</h4>
-            <div class="stat-value" id="stat-student-active">2</div>
-          </div>
-        </div>
+    <!-- TRACK SECTION -->
+    <div id="s-track" class="page-section">
+      <div class="page-header"><h1>My Complaints</h1></div>
+      <div style="display:flex;gap:.5rem;margin-bottom:1.25rem;flex-wrap:wrap">
+        <button class="ft active" data-sf="all">All</button>
+        <button class="ft" data-sf="active">Active</button>
+        <button class="ft" data-sf="resolved">Resolved</button>
+        <button class="ft" data-sf="escalated">Escalated</button>
+      </div>
+      <div class="cards-grid" id="s-all-complaints"></div>
+    </div>
+  </main>
+</div>
 
-        <div class="stat-card" style="--stat-color: var(--accent-emerald);">
-          <div class="stat-icon-wrapper">
-            <i class="fa-solid fa-circle-check"></i>
-          </div>
-          <div class="stat-info">
-            <h4>Resolved Issues</h4>
-            <div class="stat-value" id="stat-student-resolved">2</div>
-          </div>
-        </div>
-
-        <div class="stat-card" style="--stat-color: var(--accent-rose);">
-          <div class="stat-icon-wrapper">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-          </div>
-          <div class="stat-info">
-            <h4>Escalated Tickets</h4>
-            <div class="stat-value" id="stat-student-escalated">0</div>
-          </div>
-        </div>
-
-        <div class="stat-card" style="--stat-color: var(--accent-cyan);">
-          <div class="stat-icon-wrapper">
-            <i class="fa-solid fa-stopwatch"></i>
-          </div>
-          <div class="stat-info">
-            <h4>Avg. Response</h4>
-            <div class="stat-value">4.2h</div>
-          </div>
+<!-- ================================================================
+     WARDEN PORTAL
+     ================================================================ -->
+<div id="view-warden" class="view">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon"><i class="fa-solid fa-shield-halved"></i></div>
+      <span class="logo-text">VUFIX</span>
+    </div>
+    <span class="sidebar-label">Warden Panel</span>
+    <ul class="nav-list">
+      <li><button class="nav-btn active" data-section="w-home"><i class="fa-solid fa-chart-pie"></i> Dashboard</button></li>
+      <li><button class="nav-btn" data-section="w-tickets"><i class="fa-solid fa-list"></i> All Tickets</button></li>
+      <li><button class="nav-btn" data-section="w-escalated"><i class="fa-solid fa-triangle-exclamation"></i> Escalations</button></li>
+    </ul>
+    <div class="sidebar-bottom">
+      <div class="user-chip">
+        <div class="avatar">RB</div>
+        <div>
+          <div class="user-info-name">Rinu Babu</div>
+          <div class="user-info-role">Hostel Warden</div>
         </div>
       </div>
+      <button class="btn-secondary" id="btn-reset" style="width:100%;justify-content:center;margin-bottom:.5rem"><i class="fa-solid fa-rotate-right"></i> Reset Demo Data</button>
+      <button class="btn-logout" id="btn-w-logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+    </div>
+  </aside>
 
-      <!-- Section Toolbar & Filters -->
-      <div class="section-toolbar">
-        <div class="section-title">
-          <i class="fa-solid fa-list-check" style="color: var(--primary-400);"></i>
-          <span>My Maintenance Complaints</span>
-        </div>
-
-        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
-          <div class="filter-pills-bar" id="student-filter-pills">
-            <button class="btn-filter-pill active" data-filter="all">All</button>
-            <button class="btn-filter-pill" data-filter="pending">Pending</button>
-            <button class="btn-filter-pill" data-filter="in_progress">In Progress</button>
-            <button class="btn-filter-pill" data-filter="escalated">🚨 Escalated</button>
-            <button class="btn-filter-pill" data-filter="resolved">Resolved</button>
-          </div>
-
-          <div class="search-input-wrapper">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="search-student-complaints" class="form-control" placeholder="Search ticket # or title...">
+  <main class="main-content">
+    <!-- WARDEN HOME -->
+    <div id="w-home" class="page-section active">
+      <div class="page-header">
+        <div class="page-header-row">
+          <div>
+            <h1>Warden Management Portal</h1>
+            <div class="page-header-tags">
+              <span class="tag"><i class="fa-solid fa-shield-halved"></i> Rinu Babu</span>
+              <span class="tag"><i class="fa-solid fa-id-badge"></i> ADM-WARDEN-01</span>
+              <span class="tag"><i class="fa-solid fa-building"></i> Hostel A</span>
+            </div>
           </div>
         </div>
       </div>
-
-      <!-- Complaints List Grid -->
-      <div class="complaints-list-grid" id="student-complaints-list">
-        <!-- Rendered dynamically by app.js -->
+      <div class="stats-grid" style="grid-template-columns:repeat(5,1fr)">
+        <div class="stat-card"><div class="stat-icon purple"><i class="fa-solid fa-list"></i></div><div class="stat-info"><h3>Total</h3><p id="wt-total">0</p></div></div>
+        <div class="stat-card"><div class="stat-icon yellow"><i class="fa-solid fa-clock"></i></div><div class="stat-info"><h3>Pending</h3><p id="wt-pending">0</p></div></div>
+        <div class="stat-card"><div class="stat-icon blue"><i class="fa-solid fa-gears"></i></div><div class="stat-info"><h3>In Progress</h3><p id="wt-progress">0</p></div></div>
+        <div class="stat-card"><div class="stat-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="stat-info"><h3>Escalated</h3><p id="wt-escalated">0</p></div></div>
+        <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div><div class="stat-info"><h3>Resolved</h3><p id="wt-resolved">0</p></div></div>
       </div>
-    </section>
-
-    <!-- ==========================================================================
-         VIEW 3: HOSTEL WARDEN MANAGEMENT PORTAL
-         ========================================================================== -->
-    <section id="view-warden" style="display: none;">
-      <div class="warden-overview-header">
-        <h2>Hostel Warden Control Center 🛡️</h2>
-        <p style="color: var(--text-muted); font-size: 0.92rem;">
-          Hostel Maintenance Administration Dashboard • Logged in as <strong>Rinu Babu (Warden)</strong>
-        </p>
+      <div id="escalation-alert" class="alert-banner hidden">
+        <i class="fa-solid fa-bell"></i>
+        <div><span>Escalated tickets require immediate attention!</span><small>Students have flagged high-priority delays. Act now.</small></div>
+        <button class="btn-danger" style="padding:.5rem 1rem;font-size:.8rem" onclick="showWardenSection('w-escalated')">View</button>
       </div>
+      <div class="sec-head"><div class="sec-title"><div class="live-dot"></div> Recent Activity</div></div>
+      <div id="w-recent-list" class="cards-grid"></div>
+    </div>
 
-      <!-- Admin Overview Stats -->
-      <div class="stats-cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
-        <div class="stat-card" style="--stat-color: var(--primary-500);">
-          <div class="stat-icon-wrapper"><i class="fa-solid fa-boxes-stacked"></i></div>
-          <div class="stat-info">
-            <h4>Total Filed</h4>
-            <div class="stat-value" id="stat-warden-total">5</div>
+    <!-- ALL TICKETS -->
+    <div id="w-tickets" class="page-section">
+      <div class="page-header"><h1>All Tickets</h1></div>
+      <div class="table-wrap">
+        <div class="table-head-row">
+          <div class="filter-tabs" id="w-filter-tabs">
+            <button class="ft active" data-wf="All">All</button>
+            <button class="ft" data-wf="Pending">Pending</button>
+            <button class="ft" data-wf="In Progress">In Progress</button>
+            <button class="ft" data-wf="Escalated">Escalated</button>
+            <button class="ft" data-wf="Resolved">Resolved</button>
           </div>
-        </div>
-
-        <div class="stat-card" style="--stat-color: var(--accent-cyan);">
-          <div class="stat-icon-wrapper"><i class="fa-solid fa-hourglass-half"></i></div>
-          <div class="stat-info">
-            <h4>Pending Review</h4>
-            <div class="stat-value" id="stat-warden-pending">1</div>
-          </div>
-        </div>
-
-        <div class="stat-card" style="--stat-color: var(--accent-purple);">
-          <div class="stat-icon-wrapper"><i class="fa-solid fa-gears"></i></div>
-          <div class="stat-info">
-            <h4>In Progress</h4>
-            <div class="stat-value" id="stat-warden-progress">2</div>
-          </div>
-        </div>
-
-        <div class="stat-card" style="--stat-color: var(--accent-rose);">
-          <div class="stat-icon-wrapper"><i class="fa-solid fa-circle-exclamation"></i></div>
-          <div class="stat-info">
-            <h4>Urgent Escalations</h4>
-            <div class="stat-value" id="stat-warden-escalated">1</div>
-          </div>
-        </div>
-
-        <div class="stat-card" style="--stat-color: var(--accent-emerald);">
-          <div class="stat-icon-wrapper"><i class="fa-solid fa-circle-check"></i></div>
-          <div class="stat-info">
-            <h4>Resolved Today</h4>
-            <div class="stat-value" id="stat-warden-resolved">2</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Urgent Escalations Banner -->
-      <div class="urgent-escalations-banner" id="urgent-escalations-banner">
-        <div class="urgent-banner-header">
-          <div class="urgent-banner-title">
-            <i class="fa-solid fa-bell-triangle-exclamation"></i>
-            <span>Urgent Student Escalations Requiring Immediate Action</span>
-          </div>
-          <span class="preset-chip" style="background: rgba(244, 63, 94, 0.3); color: var(--accent-rose);">High Visibility</span>
-        </div>
-
-        <div class="urgent-tickets-list" id="urgent-tickets-list-container">
-          <!-- Rendered dynamically -->
-        </div>
-      </div>
-
-      <!-- Filter Controls & Search -->
-      <div class="warden-controls-bar">
-        <div class="warden-filters-group">
-          <div class="filter-pills-bar" id="warden-filter-pills">
-            <button class="btn-filter-pill active" data-wardenfilter="all">All</button>
-            <button class="btn-filter-pill" data-wardenfilter="pending">Pending</button>
-            <button class="btn-filter-pill" data-wardenfilter="in_progress">In Progress</button>
-            <button class="btn-filter-pill" data-wardenfilter="escalated">🚨 Escalated</button>
-            <button class="btn-filter-pill" data-wardenfilter="resolved">Resolved</button>
-          </div>
-
-          <select id="filter-warden-category" class="select-control">
-            <option value="all">All Categories</option>
+          <select class="cat-filter" id="w-cat-filter">
+            <option value="All">All Categories</option>
             <option value="Electrical">Electrical</option>
             <option value="Plumbing">Plumbing</option>
-            <option value="Carpentry / Furniture">Carpentry / Furniture</option>
-            <option value="Housekeeping / Cleanliness">Housekeeping</option>
-            <option value="IT / Network">IT / Network</option>
-          </select>
-
-          <select id="filter-warden-hostel" class="select-control">
-            <option value="all">All Hostel Blocks</option>
-            <option value="Block B3">Block B3</option>
-            <option value="Block A1">Block A1</option>
-            <option value="Girls Hostel C">Girls Hostel C</option>
+            <option value="Furniture">Furniture</option>
+            <option value="IT/Network">IT/Network</option>
+            <option value="Housekeeping">Housekeeping</option>
           </select>
         </div>
-
-        <div class="search-input-wrapper">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" id="search-warden-complaints" class="form-control" placeholder="Search student, room, or ticket...">
-        </div>
-      </div>
-
-      <!-- Tickets Table View -->
-      <div class="tickets-table-wrapper">
-        <table class="vufix-table">
+        <table class="tbl">
           <thead>
             <tr>
               <th>Ticket ID</th>
               <th>Student & Room</th>
-              <th>Category & Title</th>
+              <th>Issue</th>
               <th>Priority</th>
+              <th>Assigned To</th>
               <th>Status</th>
-              <th>Assigned Tech</th>
               <th>Action</th>
             </tr>
           </thead>
-          <tbody id="warden-table-body">
-            <!-- Rendered dynamically -->
-          </tbody>
+          <tbody id="w-table-body"></tbody>
         </table>
       </div>
-    </section>
+    </div>
 
+    <!-- ESCALATIONS -->
+    <div id="w-escalated" class="page-section">
+      <div class="page-header"><h1>Escalated Tickets</h1></div>
+      <div class="cards-grid" id="w-esc-list"></div>
+    </div>
   </main>
 </div>
 
-<!-- ==========================================================================
-     MODAL DIALOGS
-     ========================================================================== -->
+</div><!-- /#app -->
 
-<!-- 1. GUIDED 3-STEP COMPLAINT SUBMISSION WIZARD MODAL -->
-<div class="modal-backdrop" id="modal-complaint-wizard">
-  <div class="modal-dialog">
+<!-- ================================================================
+     MODALS
+     ================================================================ -->
+
+<!-- Timeline Modal -->
+<div class="modal-overlay" id="modal-tl">
+  <div class="modal-box">
     <div class="modal-header">
-      <div class="modal-title">
-        <i class="fa-solid fa-plus-circle" style="color: var(--primary-400);"></i>
-        <span>File Maintenance Complaint</span>
-      </div>
-      <button class="btn-close-modal" class="close-wizard">&times;</button>
+      <div><h2>Ticket Timeline: <span id="tl-id"></span></h2><p id="tl-title"></p></div>
+      <button class="btn-x" onclick="closeModal('modal-tl')"><i class="fa-solid fa-xmark"></i></button>
     </div>
-
     <div class="modal-body">
-      <!-- Wizard Progress Header -->
-      <div class="wizard-stepper-header">
-        <div class="wizard-step-node active" id="node-step-1">1</div>
-        <div class="wizard-step-node" id="node-step-2">2</div>
-        <div class="wizard-step-node" id="node-step-3">3</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <span id="tl-badge"></span>
+        <span style="font-size:.75rem;color:var(--text-gray)" id="tl-eta"></span>
       </div>
-
-      <!-- Step 1: Category & Priority -->
-      <div id="wizard-step-1-content">
-        <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem;">Step 1: Select Complaint Category</h4>
-        <div class="category-selection-grid">
-          <div class="category-option-card selected" data-cat="Electrical">
-            <i class="fa-solid fa-bolt"></i>
-            <h4>Electrical</h4>
-            <p style="font-size: 0.72rem; color: var(--text-muted);">Fan, Light, Socket, AC</p>
-          </div>
-          <div class="category-option-card" data-cat="Plumbing">
-            <i class="fa-solid fa-faucet-drip"></i>
-            <h4>Plumbing</h4>
-            <p style="font-size: 0.72rem; color: var(--text-muted);">Tap, Sink, Shower, Drain</p>
-          </div>
-          <div class="category-option-card" data-cat="Carpentry / Furniture">
-            <i class="fa-solid fa-screwdriver-wrench"></i>
-            <h4>Carpentry</h4>
-            <p style="font-size: 0.72rem; color: var(--text-muted);">Bed, Desk, Door, Lock</p>
-          </div>
-          <div class="category-option-card" data-cat="Housekeeping / Cleanliness">
-            <i class="fa-solid fa-broom"></i>
-            <h4>Housekeeping</h4>
-            <p style="font-size: 0.72rem; color: var(--text-muted);">Cleaning, Pest Control</p>
-          </div>
-          <div class="category-option-card" data-cat="IT / Network">
-            <i class="fa-solid fa-wifi"></i>
-            <h4>IT / Network</h4>
-            <p style="font-size: 0.72rem; color: var(--text-muted);">Wi-Fi, LAN, Portal</p>
-          </div>
-        </div>
-
-        <div class="form-group" style="margin-top: 1rem;">
-          <label>Urgency Priority Level</label>
-          <div class="priority-options-row">
-            <button class="priority-radio-btn" data-val="Low">Low (72h SLA)</button>
-            <button class="priority-radio-btn selected" data-val="Medium">Medium (48h)</button>
-            <button class="priority-radio-btn" data-val="High">High (24h)</button>
-            <button class="priority-radio-btn" data-val="Critical">Critical (Immediate)</button>
-          </div>
-        </div>
+      <div id="tl-tech-box" class="tech-box hidden">
+        <div class="tech-avatar" id="tl-tech-av">TK</div>
+        <div><div class="tech-name" id="tl-tech-name"></div><div class="tech-spec" id="tl-tech-spec"></div></div>
+        <a href="#" id="tl-tech-phone" class="btn-secondary" style="margin-left:auto;padding:.5rem;text-decoration:none"><i class="fa-solid fa-phone"></i></a>
       </div>
-
-      <!-- Step 2: Details & Preferred Slot -->
-      <div id="wizard-step-2-content" style="display: none;">
-        <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem;">Step 2: Enter Issue Details</h4>
-        <div class="form-group">
-          <label for="wiz-title">Issue Summary / Title</label>
-          <input type="text" id="wiz-title" class="form-control" placeholder="e.g. Ceiling fan grinding noise when speed > 2" required>
-        </div>
-
-        <div class="form-group">
-          <label for="wiz-description">Detailed Description & Instructions</label>
-          <textarea id="wiz-description" class="form-control" rows="3" placeholder="Provide details such as room area, symptoms, or specific instructions for technician..." required></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="wiz-slot">Preferred Technician Visit Time Slot</label>
-          <select id="wiz-slot" class="form-control">
-            <option value="Morning (9:00 AM - 12:00 PM)">Morning (9:00 AM - 12:00 PM)</option>
-            <option value="Afternoon (12:00 PM - 4:00 PM)">Afternoon (12:00 PM - 4:00 PM)</option>
-            <option value="Evening (4:00 PM - 8:00 PM)">Evening (4:00 PM - 8:00 PM)</option>
-            <option value="Any Time">Any Time (As Soon As Available)</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Photo Attachment (Optional Mock Uploader)</label>
-          <div class="photo-uploader-box" id="wiz-photo-box">
-            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.5rem; color: var(--primary-400); margin-bottom: 0.35rem;"></i>
-            <p style="font-size: 0.82rem; color: var(--text-muted);">Click to attach sample photo or drag image file here</p>
-            <div class="sample-photo-pickers">
-              <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=100&auto=format&fit=crop&q=60" class="sample-img-thumb selected" data-url="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500&auto=format&fit=crop&q=60" title="Fan / Electrical">
-              <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=100&auto=format&fit=crop&q=60" class="sample-img-thumb" data-url="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=500&auto=format&fit=crop&q=60" title="Plumbing Sink">
-              <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=100&auto=format&fit=crop&q=60" class="sample-img-thumb" data-url="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=500&auto=format&fit=crop&q=60" title="Router / IT">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 3: Review & Submit -->
-      <div id="wizard-step-3-content" style="display: none;">
-        <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem;">Step 3: Review Complaint Summary</h4>
-        <div class="glass-card" style="background: rgba(15, 23, 42, 0.7); margin-bottom: 1rem;">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-            <span style="font-size: 0.78rem; color: var(--text-subtle);">CATEGORY</span>
-            <strong id="summary-category" style="color: var(--primary-400);">Electrical</strong>
-          </div>
-          <div style="display: justify; margin-bottom: 0.5rem;">
-            <span style="font-size: 0.78rem; color: var(--text-subtle);">PRIORITY</span>
-            <span id="summary-priority" class="priority-badge medium">Medium</span>
-          </div>
-          <div style="margin-bottom: 0.5rem;">
-            <span style="font-size: 0.78rem; color: var(--text-subtle); display: block;">TITLE</span>
-            <strong id="summary-title" style="font-size: 0.95rem;">-</strong>
-          </div>
-          <div style="margin-bottom: 0.5rem;">
-            <span style="font-size: 0.78rem; color: var(--text-subtle); display: block;">LOCATION</span>
-            <span id="summary-location" style="font-size: 0.85rem; color: var(--text-muted);">-</span>
-          </div>
-          <div>
-            <span style="font-size: 0.78rem; color: var(--text-subtle); display: block;">PREFERRED SLOT</span>
-            <span id="summary-slot" style="font-size: 0.85rem; color: var(--accent-cyan);">-</span>
-          </div>
-        </div>
-      </div>
+      <div id="tl-eta-row" class="eta-row hidden"><i class="fa-solid fa-clock"></i><span id="tl-eta-text"></span></div>
+      <div class="tl-list" id="tl-nodes"></div>
     </div>
-
-    <div class="modal-footer">
-      <button class="btn-outline-sm" id="btn-wiz-prev" style="display: none;">Back</button>
-      <button class="btn-submit-primary" id="btn-wiz-next" style="width: auto; padding: 0.55rem 1.25rem;">
-        <span>Continue</span>
-        <i class="fa-solid fa-arrow-right"></i>
-      </button>
-    </div>
+    <div class="modal-footer"><button class="btn-secondary" onclick="closeModal('modal-tl')">Close</button></div>
   </div>
 </div>
 
-<!-- 2. LIVE STEPPER TIMELINE MODAL -->
-<div class="modal-backdrop" id="modal-timeline">
-  <div class="modal-dialog" style="max-width: 600px;">
-    <div class="modal-header timeline-modal-header">
-      <div>
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <span class="ticket-id-tag" id="timeline-ticket-id">TKT-2026-0842</span>
-          <span class="status-badge in_progress" id="timeline-status-badge">In Progress</span>
-        </div>
-        <h3 id="timeline-ticket-title" style="font-size: 1.1rem; margin-top: 0.25rem;">Title</h3>
-      </div>
-      <button class="btn-close-modal" id="close-timeline">&times;</button>
-    </div>
-
-    <div class="modal-body">
-      <!-- Assigned Technician Card (if assigned) -->
-      <div class="technician-assigned-card" id="timeline-tech-box" style="display: none;">
-        <div class="tech-profile-left">
-          <div class="tech-avatar" id="timeline-tech-avatar">RK</div>
-          <div class="tech-details">
-            <h5 id="timeline-tech-name">Ramesh Kumar</h5>
-            <p id="timeline-tech-specialty">Electrical Specialist</p>
-          </div>
-        </div>
-        <a href="#" id="timeline-tech-phone" class="btn-call-tech">
-          <i class="fa-solid fa-phone"></i>
-          <span>Call Staff</span>
-        </a>
-      </div>
-
-      <!-- ETA Display Banner -->
-      <div id="timeline-eta-banner" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: var(--radius-md); padding: 0.65rem 0.9rem; margin-bottom: 1.25rem; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between;">
-        <span><i class="fa-solid fa-hourglass-start" style="color: var(--primary-400);"></i> Expected Resolution ETA:</span>
-        <strong id="timeline-eta-text" style="color: var(--primary-400);">Targeting Today, 4:00 PM</strong>
-      </div>
-
-      <!-- Vertical Stepper Timeline -->
-      <h4 style="font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-subtle); margin-bottom: 1rem;">
-        Live Transparency Timeline Log
-      </h4>
-      
-      <div class="stepper-timeline" id="stepper-timeline-container">
-        <!-- Rendered dynamically -->
-      </div>
-    </div>
-
-    <div class="modal-footer" id="timeline-modal-footer">
-      <button class="btn-outline-sm" id="btn-timeline-close">Close</button>
-    </div>
-  </div>
-</div>
-
-<!-- 3. ESCALATE COMPLAINT PROMPT MODAL -->
-<div class="modal-backdrop" id="modal-escalate">
-  <div class="modal-dialog" style="max-width: 480px;">
-    <div class="modal-header" style="background: rgba(244, 63, 94, 0.1);">
-      <div class="modal-title" style="color: var(--accent-rose);">
-        <i class="fa-solid fa-triangle-exclamation"></i>
-        <span>Escalate Complaint to Warden</span>
-      </div>
-      <button class="btn-close-modal" id="close-escalate">&times;</button>
-    </div>
-
-    <div class="modal-body">
-      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
-        Escalating ticket <strong id="escalate-ticket-id" style="color: var(--text-main);">#TKT-2026-0842</strong> will immediately highlight it on Warden Rinu Babu's Urgent Action Banner with high visibility.
-      </p>
-
-      <div class="form-group">
-        <label>Select Reason for Escalation</label>
-        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; font-size: 0.85rem; cursor: pointer;">
-            <input type="radio" name="esc-reason" value="No technician visit despite ETA passed" checked>
-            <span>No technician visit despite ETA passed</span>
-          </label>
-          <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; font-size: 0.85rem; cursor: pointer;">
-            <input type="radio" name="esc-reason" value="Issue worsened / Immediate safety hazard">
-            <span>Issue worsened / Immediate safety hazard</span>
-          </label>
-          <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; font-size: 0.85rem; cursor: pointer;">
-            <input type="radio" name="esc-reason" value="Unresolved for > 48 hours without update">
-            <span>Unresolved for > 48 hours without update</span>
-          </label>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="escalate-custom-text">Additional Context for Warden (Optional)</label>
-        <textarea id="escalate-custom-text" class="form-control" rows="2" placeholder="e.g. Need urgent fix due to upcoming exams..."></textarea>
-      </div>
-    </div>
-
-    <div class="modal-footer">
-      <button class="btn-outline-sm" id="btn-cancel-escalate">Cancel</button>
-      <button class="btn-submit-primary" id="btn-submit-escalate" style="background: var(--accent-rose); width: auto; padding: 0.5rem 1.1rem;">
-        <span>Submit Urgent Escalation</span>
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- 4. RESOLUTION CONFIRMATION PROMPT MODAL -->
-<div class="modal-backdrop" id="modal-confirm-resolution">
-  <div class="modal-dialog" style="max-width: 480px;">
-    <div class="modal-header" style="background: rgba(16, 185, 129, 0.1);">
-      <div class="modal-title" style="color: var(--accent-emerald);">
-        <i class="fa-solid fa-clipboard-check"></i>
-        <span>Confirm Issue Resolution</span>
-      </div>
-      <button class="btn-close-modal" id="close-confirm-res">&times;</button>
-    </div>
-
-    <div class="modal-body">
-      <p style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 1rem;">
-        The maintenance team marked ticket <strong id="confirm-ticket-id">#TKT-2026-0791</strong> as <strong>Resolved</strong>. Please verify the repair:
-      </p>
-
-      <div style="display: flex; flex-direction: column; gap: 0.85rem;">
-        <button class="btn-submit-primary" id="btn-res-yes" style="background: linear-gradient(135deg, var(--accent-emerald), #059669);">
-          <i class="fa-solid fa-thumbs-up"></i>
-          <span>Yes, It's Fixed! (Close Ticket)</span>
-        </button>
-
-        <div id="rating-feedback-box" style="display: none; background: rgba(15, 23, 42, 0.6); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
-          <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.4rem;">Rate Service Experience (1-5 Stars)</label>
-          <div style="font-size: 1.25rem; color: #f59e0b; margin-bottom: 0.5rem;" id="star-rating-picker">
-            <i class="fa-solid fa-star" data-star="1"></i>
-            <i class="fa-solid fa-star" data-star="2"></i>
-            <i class="fa-solid fa-star" data-star="3"></i>
-            <i class="fa-solid fa-star" data-star="4"></i>
-            <i class="fa-solid fa-star" data-star="5" style="color: var(--text-subtle);"></i>
-          </div>
-          <textarea id="res-feedback-text" class="form-control" rows="2" placeholder="Optional review comment..."></textarea>
-        </div>
-
-        <button class="btn-card-action escalate" id="btn-res-no" style="width: 100%; justify-content: center; padding: 0.65rem;">
-          <i class="fa-solid fa-thumbs-down"></i>
-          <span>No, Still Broken (Reopen Ticket)</span>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 5. WARDEN INTERACTIVE TICKET CONTROL CENTER MODAL -->
-<div class="modal-backdrop" id="modal-warden-manage">
-  <div class="modal-dialog" style="max-width: 600px;">
-    <div class="modal-header" style="background: rgba(99, 102, 241, 0.1);">
-      <div class="modal-title">
-        <i class="fa-solid fa-sliders" style="color: var(--primary-400);"></i>
-        <span>Manage Ticket <span id="warden-manage-ticket-id">#TKT-2026-0842</span></span>
-      </div>
-      <button class="btn-close-modal" id="close-warden-manage">&times;</button>
-    </div>
-
-    <div class="modal-body">
-      <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
-        <strong id="wm-student-name" style="font-size: 0.95rem;">Aryaman Saboo</strong>
-        <span id="wm-student-room" style="font-size: 0.8rem; color: var(--text-muted); display: block;">Hostel A, Block B3, Room B3-304</span>
-        <p id="wm-issue-title" style="font-size: 0.88rem; color: var(--primary-400); margin-top: 0.35rem;">Ceiling Fan Noise</p>
-      </div>
-
-      <div class="form-row-2">
-        <div class="form-group">
-          <label for="wm-status-select">Update Status</label>
-          <select id="wm-status-select" class="form-control">
-            <option value="Submitted">Submitted</option>
-            <option value="Under Review">Under Review</option>
-            <option value="Assigned">Assigned</option>
-            <option value="In Progress">In Progress</option>
-            <option value="On Hold">On Hold</option>
-            <option value="Resolved">Resolved</option>
-            <option value="Closed">Closed</option>
-            <option value="Escalated">Escalated</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="wm-tech-select">Assign Staff Technician</label>
-          <select id="wm-tech-select" class="form-control">
-            <option value="">-- Select Technician --</option>
-            <option value="tech_1">Ramesh Kumar — Electrical</option>
-            <option value="tech_2">Suresh Sharma — Plumbing</option>
-            <option value="tech_3">Vikas Patil — IT & Network</option>
-            <option value="tech_4">Sunita Devi — Housekeeping</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="wm-eta-input">Set / Extend Target ETA Date & Time</label>
-        <input type="datetime-local" id="wm-eta-input" class="form-control">
-      </div>
-
-      <div class="form-group">
-        <label for="wm-note-input">Add Internal / Student-Facing Maintenance Progress Note</label>
-        <textarea id="wm-note-input" class="form-control" rows="2" placeholder="e.g. Sourced capacitor from central warehouse. Technician arriving by 3:00 PM."></textarea>
-      </div>
-    </div>
-
-    <div class="modal-footer">
-      <button class="btn-outline-sm" id="btn-warden-cancel">Cancel</button>
-      <button class="btn-submit-primary" id="btn-warden-save-ticket" style="width: auto; padding: 0.5rem 1.2rem;">
-        <span>Save Changes & Push Log</span>
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- 6. UX RESEARCH DOCUMENT OVERLAY MODAL -->
-<div class="modal-backdrop" id="modal-research">
-  <div class="modal-dialog" style="max-width: 900px; height: 85vh;">
+<!-- Escalate Modal -->
+<div class="modal-overlay" id="modal-esc">
+  <div class="modal-box">
     <div class="modal-header">
-      <div class="modal-title">
-        <i class="fa-solid fa-book-open" style="color: var(--primary-400);"></i>
-        <span>Midterm UX Research & Information Architecture — Vijaybhoomi University</span>
-      </div>
-      <button class="btn-close-modal" id="close-research">&times;</button>
+      <div><h2 class="text-danger"><i class="fa-solid fa-triangle-exclamation"></i> Escalate Ticket</h2><p id="esc-id"></p></div>
+      <button class="btn-x" onclick="closeModal('modal-esc')"><i class="fa-solid fa-xmark"></i></button>
     </div>
-
-    <div class="modal-body" style="padding: 1.5rem; color: var(--text-main);">
-      <h3>Where Did My Complaint Go?</h3>
-      <p style="color: var(--text-muted); margin-bottom: 1rem;">Designing transparency into the hostel maintenance complaint process • Author: Aryaman Saboo</p>
-      
-      <div style="background: var(--bg-card); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
-        <h4 style="color: var(--primary-400); margin-bottom: 0.5rem;">Core Problem Space</h4>
-        <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">
-          Hostel residents face anxiety not primarily due to slow repairs, but because of <strong>zero visibility</strong> into what happens after submitting a complaint. VUFIX addresses this by implementing an interactive live timeline, clear accountability, and student resolution confirmation.
-        </p>
-      </div>
+    <div class="modal-body">
+      <p style="font-size:.875rem;margin-bottom:1rem;color:var(--text-gray)">This will flag the ticket as urgent and notify the warden immediately.</p>
+      <div class="form-group"><label class="form-label">Reason for Escalation <span class="text-danger">*</span></label><textarea class="form-control" id="esc-reason" rows="3" placeholder="Describe why this needs urgent attention..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modal-esc')">Cancel</button>
+      <button class="btn-danger" id="btn-esc-submit"><i class="fa-solid fa-triangle-exclamation"></i> Escalate Now</button>
     </div>
   </div>
 </div>
 
-<!-- Toast Notifications Container -->
-<div id="toast-container"></div>
+<!-- Confirm Resolution Modal -->
+<div class="modal-overlay" id="modal-res">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div><h2>Confirm Resolution <span id="res-id"></span></h2></div>
+      <button class="btn-x" onclick="closeModal('modal-res')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.875rem;margin-bottom:1rem;color:var(--text-gray)">Has the issue been fully fixed to your satisfaction?</p>
+      <div class="form-group"><label class="form-label">Rate the Service</label><div class="stars" id="res-stars"></div></div>
+      <div class="form-group"><label class="form-label">Feedback (optional)</label><textarea class="form-control" id="res-feedback" rows="2" placeholder="Share your experience..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" id="btn-res-no" style="border-color:rgba(248,113,113,.3);color:var(--danger)"><i class="fa-solid fa-xmark"></i> Still Broken</button>
+      <button class="btn-success" id="btn-res-yes"><i class="fa-solid fa-check"></i> Yes, Fixed!</button>
+    </div>
+  </div>
+</div>
 
-<!-- Application JavaScript Files -->
+<!-- Warden Manage Modal -->
+<div class="modal-overlay" id="modal-wm">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div><h2>Manage Ticket <span id="wm-id"></span></h2><p id="wm-student"></p></div>
+      <button class="btn-x" onclick="closeModal('modal-wm')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="background:rgba(168,85,247,.06);border:1px solid var(--border-s);border-radius:var(--r-md);padding:1rem;margin-bottom:1.25rem;font-size:.875rem;color:var(--text-gray)">
+        <strong style="color:var(--text-bright);" id="wm-issue-title"></strong>
+        <span id="wm-issue-cat" style="display:block;margin-top:.25rem;color:var(--text-muted)"></span>
+      </div>
+      <div class="form-group"><label class="form-label">Update Status</label>
+        <select class="form-control" id="wm-status">
+          <option value="Submitted">Submitted</option>
+          <option value="Under Review">Under Review</option>
+          <option value="Assigned">Assigned</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Resolved">Resolved</option>
+          <option value="Closed">Closed</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Assign Technician</label>
+        <select class="form-control" id="wm-tech">
+          <option value="">-- Select Technician --</option>
+          <option value="tech_1">Ramesh Kumar — Electrical Specialist</option>
+          <option value="tech_2">Suresh Sharma — Plumbing Specialist</option>
+          <option value="tech_3">Vikas Patil — IT & Network Specialist</option>
+          <option value="tech_4">Sunita Devi — Housekeeping Specialist</option>
+          <option value="tech_5">Rajesh Carpenter — Furniture Specialist</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">ETA (Estimated Resolution Date)</label><input type="datetime-local" class="form-control" id="wm-eta"></div>
+      <div class="form-group"><label class="form-label">Warden Note</label><textarea class="form-control" id="wm-note" rows="3" placeholder="Add a note visible in the student timeline..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modal-wm')">Cancel</button>
+      <button class="btn-primary" id="btn-wm-save" style="width:auto"><i class="fa-solid fa-floppy-disk"></i> Save &amp; Update</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     SCRIPTS
+     ================================================================ -->
 <script src="store.js"></script>
-<script src="app.js"></script>
+<script>
+// ----------------------------------------------------------------
+// APP STATE
+// ----------------------------------------------------------------
+let currentUser = null;
+let wizardStep = 1;
+let wizardCat = 'Electrical';
+let activeEscId = null;
+let activeResId = null;
+let activeWmId  = null;
+let resRating   = 0;
+let studentFilter = 'all';
+let wardenFilter  = 'All';
+let wardenCatFilter = 'All';
+
+const store = window.VUFIXStore;
+
+// ----------------------------------------------------------------
+// UTILS
+// ----------------------------------------------------------------
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function toast(title, msg, type='info') {
+  const wrap = document.getElementById('toast-wrap');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  const icons = {info:'fa-circle-info',success:'fa-circle-check',warning:'fa-triangle-exclamation',danger:'fa-circle-xmark'};
+  t.innerHTML = `<i class="fa-solid ${icons[type]||'fa-circle-info'}" style="margin-top:.1rem;font-size:1.1rem"></i><div><strong>${esc(title)}</strong><p>${esc(msg)}</p></div>`;
+  wrap.appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(40px)'; t.style.transition='all .3s'; setTimeout(()=>t.remove(),300); },4000);
+}
+
+function showView(id) {
+  ['view-auth','view-student','view-warden'].forEach(v=>{
+    document.getElementById(v).classList.remove('active');
+    document.getElementById(v).style.display='none';
+  });
+  const el = document.getElementById(id);
+  el.style.display='flex';
+  el.classList.add('active');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+
+function statusBadge(c) {
+  let cls = 'badge-submitted', label = c.status;
+  if (c.escalated) { cls='badge-escalated'; label='🚨 Escalated'; }
+  else if (c.status==='Under Review') cls='badge-review';
+  else if (c.status==='Assigned') cls='badge-assigned';
+  else if (c.status==='In Progress') cls='badge-progress';
+  else if (c.status==='Resolved') cls='badge-resolved';
+  else if (c.status==='Closed') cls='badge-closed';
+  return `<span class="badge ${cls}">${esc(label)}</span>`;
+}
+
+function prioBadge(p) {
+  const cls = p.toLowerCase();
+  return `<span class="prio-badge prio-${cls}">${esc(p)}</span>`;
+}
+
+function fmtDate(d) {
+  return new Date(d).toLocaleString('en-IN',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+
+// ----------------------------------------------------------------
+// AUTH
+// ----------------------------------------------------------------
+// Tab switching
+document.querySelectorAll('.auth-tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.auth-tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.auth-form-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+// Student login
+document.getElementById('btn-student-login').addEventListener('click',()=>{
+  const email = document.getElementById('s-email').value.trim();
+  const pass  = document.getElementById('s-pass').value;
+  const err = document.getElementById('err-student');
+  err.classList.remove('show');
+  try {
+    const user = store.login(email, pass);
+    if (user && user.role==='student') {
+      loginStudent(user);
+    } else if (user && user.role==='warden') {
+      store.logout();
+      toast('Wrong Portal','Please use the Warden tab to login.','warning');
+    } else {
+      err.classList.add('show');
+    }
+  } catch(e) {
+    err.textContent = 'Invalid email or password.';
+    err.classList.add('show');
+  }
+});
+
+// Warden login
+document.getElementById('btn-warden-login').addEventListener('click',()=>{
+  const adminId = document.getElementById('w-id').value.trim();
+  const pass    = document.getElementById('w-pass').value;
+  const err = document.getElementById('err-warden');
+  err.classList.remove('show');
+  const user = store.users.find(u=>u.role==='warden' && (u.adminId===adminId || u.email===adminId) && u.password===pass);
+  if (user) {
+    store.state.currentUser = user;
+    store.saveState();
+    loginWarden(user);
+
+  } else {
+    err.classList.add('show');
+  }
+});
+
+// Signup
+document.getElementById('btn-signup').addEventListener('click',()=>{
+  const err = document.getElementById('err-signup');
+  err.classList.remove('show');
+  const name  = document.getElementById('r-name').value.trim();
+  const roll  = document.getElementById('r-roll').value.trim();
+  const email = document.getElementById('r-email').value.trim();
+  const hostel= document.getElementById('r-hostel').value;
+  const room  = document.getElementById('r-room').value.trim();
+  const pass  = document.getElementById('r-pass').value;
+  if (!name||!roll||!email||!room||!pass) { err.textContent='Please fill all fields.'; err.classList.add('show'); return; }
+  try {
+    const user = store.registerUser({name,rollNo:roll,email,hostel,block:'Block A',room,password:pass,role:'student',avatar:name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)});
+    loginStudent(user);
+    toast('Account Created!','Welcome to VUFIX, '+name,'success');
+  } catch(e) {
+    err.textContent = e.message||'Registration failed.';
+    err.classList.add('show');
+  }
+});
+
+// Demo presets
+document.querySelectorAll('.demo-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const demo = btn.dataset.demo;
+    if (demo==='student') {
+      const u = store.users.find(u=>u.id==='usr_aryaman');
+      if(u){ store.state.currentUser=u; store.saveState(); loginStudent(u); }
+    } else if (demo==='parth') {
+      const u = store.users.find(u=>u.id==='usr_parth');
+      if(u){ store.state.currentUser=u; store.saveState(); loginStudent(u); }
+    } else if (demo==='warden') {
+      const u = store.users.find(u=>u.id==='usr_rinu');
+      if(u){ store.state.currentUser=u; store.saveState(); loginWarden(u); }
+    }
+  });
+});
+
+function loginStudent(user) {
+  currentUser = user;
+  document.getElementById('s-avatar').textContent = user.avatar||'ST';
+  document.getElementById('s-uname').textContent  = user.name;
+  document.getElementById('s-welcome').textContent = `Welcome back, ${user.name.split(' ')[0]} 👋`;
+  const tags = document.getElementById('s-tags');
+  tags.innerHTML = `
+    <span class="tag"><i class="fa-solid fa-id-card"></i> ${esc(user.rollNo||'ST')}</span>
+    <span class="tag"><i class="fa-solid fa-door-closed"></i> ${esc(user.hostelRoomDisplay||user.hostel+', '+user.room)}</span>
+    <span class="tag"><i class="fa-solid fa-envelope"></i> ${esc(user.email)}</span>
+  `;
+  showView('view-student');
+  showStudentSection('s-home');
+  renderStudentHome();
+}
+
+function loginWarden(user) {
+  currentUser = user;
+  showView('view-warden');
+  showWardenSection('w-home');
+  renderWardenHome();
+}
+
+document.getElementById('btn-s-logout').addEventListener('click', logout);
+document.getElementById('btn-w-logout').addEventListener('click', logout);
+function logout() {
+  store.logout();
+  currentUser = null;
+  showView('view-auth');
+}
+
+// ----------------------------------------------------------------
+// STUDENT NAVIGATION
+// ----------------------------------------------------------------
+document.querySelectorAll('[data-section]').forEach(btn=>{
+  if (btn.closest('#view-student')) {
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('#view-student .nav-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      showStudentSection(btn.dataset.section);
+    });
+  }
+  if (btn.closest('#view-warden')) {
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('#view-warden .nav-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      showWardenSection(btn.dataset.section);
+    });
+  }
+});
+
+function showStudentSection(id) {
+  document.querySelectorAll('#view-student .page-section').forEach(s=>s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+  if (id==='s-home') renderStudentHome();
+  if (id==='s-track') renderTrack();
+}
+
+function showWardenSection(id) {
+  document.querySelectorAll('#view-warden .page-section').forEach(s=>s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+  document.querySelectorAll('#view-warden .nav-btn').forEach(b=>{
+    if(b.dataset.section===id) b.classList.add('active');
+  });
+  if (id==='w-home') renderWardenHome();
+  if (id==='w-tickets') renderWardenTable();
+  if (id==='w-escalated') renderEscalated();
+}
+
+// New complaint shortcuts
+document.getElementById('btn-new-complaint').addEventListener('click',()=>{ showStudentSection('s-new'); document.querySelector('[data-section="s-new"]').classList.add('active'); document.querySelector('[data-section="s-home"]').classList.remove('active'); resetWizard(); });
+document.getElementById('s-view-all').addEventListener('click',()=>{ showStudentSection('s-track'); });
+
+// ----------------------------------------------------------------
+// STUDENT HOME RENDER
+// ----------------------------------------------------------------
+function renderStudentHome() {
+  if (!currentUser) return;
+  const complaints = store.complaints.filter(c=>c.studentId===currentUser.id);
+  const active = complaints.filter(c=>c.status!=='Resolved'&&c.status!=='Closed'&&!c.escalated).length;
+  const resolved = complaints.filter(c=>c.status==='Resolved'||c.status==='Closed').length;
+  const escalated = complaints.filter(c=>c.escalated).length;
+  document.getElementById('st-active').textContent    = active;
+  document.getElementById('st-resolved').textContent  = resolved;
+  document.getElementById('st-escalated').textContent = escalated;
+
+  const feed = document.getElementById('s-feed');
+  const recent = complaints.filter(c=>c.status!=='Resolved'&&c.status!=='Closed').slice(0,4);
+  if (!recent.length) {
+    feed.innerHTML = `<div class="empty-state"><i class="fa-solid fa-clipboard-check"></i><h3>No Active Complaints</h3><p>File a complaint using the "New Complaint" option.</p></div>`;
+  } else {
+    feed.innerHTML = recent.map(c=>renderCard(c,'student')).join('');
+    bindCardBtns(feed,'student');
+  }
+}
+
+// ----------------------------------------------------------------
+// TRACK RENDER
+// ----------------------------------------------------------------
+function renderTrack() {
+  if (!currentUser) return;
+  let complaints = store.complaints.filter(c=>c.studentId===currentUser.id);
+  if (studentFilter==='active') complaints = complaints.filter(c=>c.status!=='Resolved'&&c.status!=='Closed');
+  if (studentFilter==='resolved') complaints = complaints.filter(c=>c.status==='Resolved'||c.status==='Closed');
+  if (studentFilter==='escalated') complaints = complaints.filter(c=>c.escalated);
+
+  const el = document.getElementById('s-all-complaints');
+  if (!complaints.length) {
+    el.innerHTML = `<div class="empty-state"><i class="fa-solid fa-inbox"></i><h3>No complaints found</h3><p>Try a different filter.</p></div>`;
+  } else {
+    el.innerHTML = complaints.map(c=>renderCard(c,'student')).join('');
+    bindCardBtns(el,'student');
+  }
+}
+
+document.querySelectorAll('[data-sf]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('[data-sf]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    studentFilter = btn.dataset.sf;
+    renderTrack();
+  });
+});
+
+// ----------------------------------------------------------------
+// COMPLAINT CARD RENDER
+// ----------------------------------------------------------------
+function renderCard(c, role) {
+  const isResolvedPending = c.status==='Resolved' && c.studentConfirmed===null && role==='student';
+  return `
+    <div class="c-card">
+      <div class="c-meta">
+        <span class="ticket-tag">${esc(c.id)}</span>
+        ${statusBadge(c)}
+        ${prioBadge(c.priority)}
+        <span style="font-size:.72rem;color:var(--text-muted);margin-left:auto">${fmtDate(c.createdAt)}</span>
+      </div>
+      <div class="c-title">${esc(c.title)}</div>
+      <div class="c-desc">${esc(c.description)}</div>
+      <div class="c-details">
+        <div class="c-detail"><i class="fa-solid fa-layer-group"></i>${esc(c.category)} ${c.subcategory?'('+esc(c.subcategory)+')':''}</div>
+        <div class="c-detail"><i class="fa-solid fa-clock"></i>Slot: ${esc(c.preferredSlot)}</div>
+        ${c.assignedTechnicianName
+          ? `<div class="tech-pill"><i class="fa-solid fa-user-gear"></i> Assigned: <strong>${esc(c.assignedTechnicianName)}</strong></div>`
+          : `<div class="c-detail" style="color:var(--text-muted)"><i class="fa-solid fa-hourglass"></i> Waiting for assignment...</div>`
+        }
+      </div>
+      ${isResolvedPending ? `
+        <div class="resolve-box">
+          <p><i class="fa-solid fa-circle-info"></i> Technician marked this as resolved. Please confirm:</p>
+          <button class="btn-confirm btn-confirm-res" data-id="${esc(c.id)}"><i class="fa-solid fa-check"></i> Confirm Resolution</button>
+        </div>
+      ` : ''}
+      <div class="c-actions">
+        <button class="c-btn primary btn-tl" data-id="${esc(c.id)}"><i class="fa-solid fa-timeline"></i> View Timeline</button>
+        ${role==='student' && c.status!=='Resolved' && c.status!=='Closed' && !c.escalated
+          ? `<button class="c-btn danger btn-esc" data-id="${esc(c.id)}"><i class="fa-solid fa-triangle-exclamation"></i> Escalate</button>`
+          : ''}
+        ${role==='warden'
+          ? `<button class="c-btn btn-wm" data-id="${esc(c.id)}"><i class="fa-solid fa-sliders"></i> Manage</button>`
+          : ''}
+      </div>
+    </div>
+  `;
+}
+
+function bindCardBtns(container, role) {
+  container.querySelectorAll('.btn-tl').forEach(btn=>{
+    btn.addEventListener('click',()=>openTimeline(btn.dataset.id));
+  });
+  container.querySelectorAll('.btn-esc').forEach(btn=>{
+    btn.addEventListener('click',()=>openEscalate(btn.dataset.id));
+  });
+  container.querySelectorAll('.btn-confirm-res').forEach(btn=>{
+    btn.addEventListener('click',()=>openResolve(btn.dataset.id));
+  });
+  container.querySelectorAll('.btn-wm').forEach(btn=>{
+    btn.addEventListener('click',()=>openWardenManage(btn.dataset.id));
+  });
+}
+
+// ----------------------------------------------------------------
+// WIZARD
+// ----------------------------------------------------------------
+function resetWizard() {
+  wizardStep=1; wizardCat='Electrical';
+  document.getElementById('wiz-1').classList.remove('hidden');
+  document.getElementById('wiz-2').classList.add('hidden');
+  document.getElementById('wiz-3').classList.add('hidden');
+  document.getElementById('wiz-progress').style.width='33%';
+  document.querySelectorAll('.cat-tile').forEach(t=>t.classList.remove('sel'));
+  document.querySelector('.cat-tile[data-cat="Electrical"]').classList.add('sel');
+  document.getElementById('wiz-title').value='';
+  document.getElementById('wiz-desc').value='';
+  document.getElementById('wiz-subcat').value='';
+  document.getElementById('wiz-priority').value='Medium';
+  document.getElementById('wiz-slot').value='Anytime';
+}
+
+document.querySelectorAll('.cat-tile').forEach(tile=>{
+  tile.addEventListener('click',()=>{
+    document.querySelectorAll('.cat-tile').forEach(t=>t.classList.remove('sel'));
+    tile.classList.add('sel');
+    wizardCat = tile.dataset.cat;
+  });
+});
+
+document.getElementById('wiz-next-1').addEventListener('click',()=>{
+  document.getElementById('wiz-1').classList.add('hidden');
+  document.getElementById('wiz-2').classList.remove('hidden');
+  document.getElementById('wiz-progress').style.width='66%';
+  wizardStep=2;
+});
+
+document.getElementById('wiz-back-2').addEventListener('click',()=>{
+  document.getElementById('wiz-2').classList.add('hidden');
+  document.getElementById('wiz-1').classList.remove('hidden');
+  document.getElementById('wiz-progress').style.width='33%';
+  wizardStep=1;
+});
+
+document.getElementById('wiz-next-2').addEventListener('click',()=>{
+  const title = document.getElementById('wiz-title').value.trim();
+  const desc  = document.getElementById('wiz-desc').value.trim();
+  if (!title||!desc) { toast('Missing Info','Please fill in the title and description.','warning'); return; }
+  document.getElementById('wiz-2').classList.add('hidden');
+  document.getElementById('wiz-3').classList.remove('hidden');
+  document.getElementById('wiz-progress').style.width='100%';
+  // Render summary
+  const summary = document.getElementById('wiz-summary');
+  summary.innerHTML = `
+    <div class="sum-row"><span class="sum-key">Category</span><span class="sum-val">${esc(wizardCat)}</span></div>
+    <div class="sum-row"><span class="sum-key">Sub-Category</span><span class="sum-val">${esc(document.getElementById('wiz-subcat').value||'General')}</span></div>
+    <div class="sum-row"><span class="sum-key">Title</span><span class="sum-val">${esc(title)}</span></div>
+    <div class="sum-row"><span class="sum-key">Priority</span><span class="sum-val">${esc(document.getElementById('wiz-priority').value)}</span></div>
+    <div class="sum-row"><span class="sum-key">Location</span><span class="sum-val">${esc(currentUser.hostelRoomDisplay||currentUser.hostel+', '+currentUser.room)}</span></div>
+  `;
+  wizardStep=3;
+});
+
+document.getElementById('wiz-back-3').addEventListener('click',()=>{
+  document.getElementById('wiz-3').classList.add('hidden');
+  document.getElementById('wiz-2').classList.remove('hidden');
+  document.getElementById('wiz-progress').style.width='66%';
+  wizardStep=2;
+});
+
+document.getElementById('wiz-submit').addEventListener('click',()=>{
+  const title = document.getElementById('wiz-title').value.trim();
+  const desc  = document.getElementById('wiz-desc').value.trim();
+  const subcat= document.getElementById('wiz-subcat').value.trim();
+  const prio  = document.getElementById('wiz-priority').value;
+  const slot  = document.getElementById('wiz-slot').value;
+
+  try {
+    store.createComplaint({
+      title, description:desc, category:wizardCat,
+      subcategory:subcat||'General Issue', priority:prio, preferredSlot:slot
+    });
+    toast('Complaint Submitted!','Technician auto-assigned. Track it in "My Complaints".','success');
+    resetWizard();
+    showStudentSection('s-home');
+    document.querySelectorAll('#view-student .nav-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelector('[data-section="s-home"]').classList.add('active');
+  } catch(e) {
+    toast('Error','Could not submit complaint: '+(e.message||''),'danger');
+  }
+});
+
+// ----------------------------------------------------------------
+// TIMELINE MODAL
+// ----------------------------------------------------------------
+function openTimeline(id) {
+  const c = store.complaints.find(x=>x.id===id);
+  if (!c) return;
+  document.getElementById('tl-id').textContent    = c.id;
+  document.getElementById('tl-title').textContent = c.title;
+  document.getElementById('tl-badge').outerHTML    = `<span id="tl-badge">${statusBadge(c)}</span>`;
+
+  const techBox = document.getElementById('tl-tech-box');
+  if (c.assignedTechnicianName) {
+    techBox.classList.remove('hidden');
+    document.getElementById('tl-tech-av').textContent   = c.assignedTechnicianAvatar||'TK';
+    document.getElementById('tl-tech-name').textContent = c.assignedTechnicianName;
+    document.getElementById('tl-tech-spec').textContent = c.assignedTechnicianSpecialty||'Specialist';
+    document.getElementById('tl-tech-phone').href       = 'tel:'+(c.assignedTechnicianPhone||'');
+  } else { techBox.classList.add('hidden'); }
+
+  const etaRow = document.getElementById('tl-eta-row');
+  if (c.eta) {
+    etaRow.classList.remove('hidden');
+    document.getElementById('tl-eta-text').textContent = 'ETA: '+new Date(c.eta).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'});
+  } else { etaRow.classList.add('hidden'); }
+
+  const icons = {submitted:'fa-paper-plane',review:'fa-eye',assigned:'fa-user-check',in_progress:'fa-gears',escalated:'fa-triangle-exclamation',resolved:'fa-circle-check',closed:'fa-lock',warden_note:'fa-sticky-note'};
+  const nodes = document.getElementById('tl-nodes');
+  nodes.innerHTML = (c.timeline||[]).map((log,i)=>{
+    const isLast = i===c.timeline.length-1;
+    const icon = icons[log.type]||'fa-check';
+    return `
+      <div class="tl-node ${isLast?'cur':''}">
+        <div class="tl-icon"><i class="fa-solid ${icon}"></i></div>
+        <div class="tl-card">
+          <div class="tl-meta"><strong>${esc(log.title)}</strong><span>${fmtDate(log.timestamp)}</span></div>
+          <div class="tl-body">${esc(log.text)}</div>
+          <div class="tl-author">By: ${esc(log.author)}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  openModal('modal-tl');
+}
+
+// ----------------------------------------------------------------
+// ESCALATE MODAL
+// ----------------------------------------------------------------
+function openEscalate(id) {
+  activeEscId = id;
+  document.getElementById('esc-id').textContent = '#'+id;
+  document.getElementById('esc-reason').value = '';
+  openModal('modal-esc');
+}
+
+document.getElementById('btn-esc-submit').addEventListener('click',()=>{
+  const reason = document.getElementById('esc-reason').value.trim();
+  if (!reason) { toast('Required','Please provide a reason for escalation.','warning'); return; }
+  try {
+    store.escalateComplaint(activeEscId, reason);
+    closeModal('modal-esc');
+    toast('Escalated!','Warden has been notified. Your complaint is now flagged as urgent.','warning');
+    renderStudentHome();
+    renderTrack();
+  } catch(e) { toast('Error',e.message||'Could not escalate.','danger'); }
+});
+
+// ----------------------------------------------------------------
+// RESOLVE MODAL
+// ----------------------------------------------------------------
+function openResolve(id) {
+  activeResId = id;
+  resRating = 0;
+  document.getElementById('res-id').textContent = '#'+id;
+  document.getElementById('res-feedback').value = '';
+  const stars = document.getElementById('res-stars');
+  stars.innerHTML = [1,2,3,4,5].map(n=>`<button class="star-btn" data-v="${n}">★</button>`).join('');
+  stars.querySelectorAll('.star-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      resRating = +btn.dataset.v;
+      stars.querySelectorAll('.star-btn').forEach((b,i)=>b.classList.toggle('on',i<resRating));
+    });
+  });
+  openModal('modal-res');
+}
+
+document.getElementById('btn-res-yes').addEventListener('click',()=>{
+  try {
+    store.confirmResolution(activeResId, true, {rating: resRating, comment: document.getElementById('res-feedback').value.trim()});
+    closeModal('modal-res');
+    toast('Thank you!','Your confirmation has been recorded. Complaint closed.','success');
+    renderStudentHome(); renderTrack();
+  } catch(e) { toast('Error',e.message||'','danger'); }
+});
+
+document.getElementById('btn-res-no').addEventListener('click',()=>{
+  try {
+    store.confirmResolution(activeResId, false, {rating:0, comment:'Issue not resolved — reopened by student.'});
+    closeModal('modal-res');
+    toast('Reopened','Your complaint has been reopened. Warden notified.','warning');
+    renderStudentHome(); renderTrack();
+  } catch(e) { toast('Error',e.message||'','danger'); }
+});
+
+// ----------------------------------------------------------------
+// WARDEN HOME
+// ----------------------------------------------------------------
+function renderWardenHome() {
+  const c = store.complaints;
+  document.getElementById('wt-total').textContent    = c.length;
+  document.getElementById('wt-pending').textContent  = c.filter(x=>x.status==='Submitted'||x.status==='Under Review').length;
+  document.getElementById('wt-progress').textContent = c.filter(x=>x.status==='Assigned'||x.status==='In Progress').length;
+  document.getElementById('wt-escalated').textContent= c.filter(x=>x.escalated).length;
+  document.getElementById('wt-resolved').textContent = c.filter(x=>x.status==='Resolved'||x.status==='Closed').length;
+
+  const escCount = c.filter(x=>x.escalated).length;
+  const banner = document.getElementById('escalation-alert');
+  if (escCount>0) banner.classList.remove('hidden'); else banner.classList.add('hidden');
+
+  const recent = [...c].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,6);
+  const el = document.getElementById('w-recent-list');
+  if (!recent.length) {
+    el.innerHTML = `<div class="empty-state"><i class="fa-solid fa-inbox"></i><h3>No tickets yet</h3><p>Tickets will appear here when students file complaints.</p></div>`;
+  } else {
+    el.innerHTML = recent.map(c=>renderCard(c,'warden')).join('');
+    bindCardBtns(el,'warden');
+  }
+}
+
+// ----------------------------------------------------------------
+// WARDEN TABLE
+// ----------------------------------------------------------------
+function renderWardenTable() {
+  let c = store.complaints;
+  if (wardenFilter!=='All' && wardenFilter!=='Pending') {
+    c = c.filter(x=>{ if(wardenFilter==='In Progress') return x.status==='Assigned'||x.status==='In Progress'; if(wardenFilter==='Escalated') return x.escalated; if(wardenFilter==='Resolved') return x.status==='Resolved'||x.status==='Closed'; return x.status===wardenFilter; });
+  } else if (wardenFilter==='Pending') {
+    c = c.filter(x=>x.status==='Submitted'||x.status==='Under Review');
+  }
+  if (wardenCatFilter!=='All') c = c.filter(x=>x.category===wardenCatFilter);
+
+  const tbody = document.getElementById('w-table-body');
+  if (!c.length) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:3rem;color:var(--text-muted)">No tickets found</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = c.map(x=>`
+    <tr>
+      <td><span class="ticket-tag">${esc(x.id)}</span></td>
+      <td><strong style="color:var(--text-bright)">${esc(x.studentName)}</strong><br><span style="font-size:.75rem">${esc(x.room)}</span></td>
+      <td><strong style="color:var(--text-bright)">${esc(x.title)}</strong><br><span style="font-size:.75rem">${esc(x.category)}</span></td>
+      <td>${prioBadge(x.priority)}</td>
+      <td>${x.assignedTechnicianName?`<span class="tech-pill" style="display:inline-flex"><i class="fa-solid fa-user-gear"></i>${esc(x.assignedTechnicianName)}</span>`:`<span style="color:var(--text-muted);font-size:.8rem">Unassigned</span>`}</td>
+      <td>${statusBadge(x)}</td>
+      <td><button class="btn-manage btn-wm" data-id="${esc(x.id)}"><i class="fa-solid fa-sliders"></i> Manage</button></td>
+    </tr>
+  `).join('');
+  tbody.querySelectorAll('.btn-wm').forEach(btn=>btn.addEventListener('click',()=>openWardenManage(btn.dataset.id)));
+}
+
+// Table filters
+document.querySelectorAll('[data-wf]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('[data-wf]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    wardenFilter = btn.dataset.wf;
+    renderWardenTable();
+  });
+});
+document.getElementById('w-cat-filter').addEventListener('change',e=>{ wardenCatFilter=e.target.value; renderWardenTable(); });
+
+// Escalated section
+function renderEscalated() {
+  const esc_c = store.complaints.filter(c=>c.escalated);
+  const el = document.getElementById('w-esc-list');
+  if (!esc_c.length) {
+    el.innerHTML = `<div class="empty-state"><i class="fa-solid fa-check-circle text-success"></i><h3>No escalated tickets!</h3><p>All complaints are being handled in time.</p></div>`;
+  } else {
+    el.innerHTML = esc_c.map(c=>renderCard(c,'warden')).join('');
+    bindCardBtns(el,'warden');
+  }
+}
+
+// ----------------------------------------------------------------
+// WARDEN MANAGE MODAL
+// ----------------------------------------------------------------
+function openWardenManage(id) {
+  activeWmId = id;
+  const c = store.complaints.find(x=>x.id===id);
+  if (!c) return;
+  document.getElementById('wm-id').textContent       = '#'+c.id;
+  document.getElementById('wm-student').textContent  = c.studentName+' — Room '+c.room;
+  document.getElementById('wm-issue-title').textContent = c.title;
+  document.getElementById('wm-issue-cat').textContent   = c.category+(c.subcategory?' → '+c.subcategory:'');
+  document.getElementById('wm-status').value    = c.status;
+  document.getElementById('wm-tech').value      = c.assignedTechnicianId||'';
+  document.getElementById('wm-note').value      = '';
+  if (c.eta) {
+    const d = new Date(c.eta);
+    document.getElementById('wm-eta').value = new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);
+  } else {
+    document.getElementById('wm-eta').value = '';
+  }
+  openModal('modal-wm');
+}
+
+document.getElementById('btn-wm-save').addEventListener('click',()=>{
+  const status     = document.getElementById('wm-status').value;
+  const technicianId = document.getElementById('wm-tech').value;
+  const eta        = document.getElementById('wm-eta').value;
+  const note       = document.getElementById('wm-note').value.trim();
+  try {
+    store.updateComplaintWarden(activeWmId,{
+      status,
+      technicianId: technicianId||null,
+      eta: eta ? new Date(eta).toISOString() : null,
+      wardenNote: note||null
+    });
+    closeModal('modal-wm');
+    toast('Updated!','Ticket status and assignment saved.','success');
+    renderWardenHome();
+    renderWardenTable();
+    renderEscalated();
+  } catch(e) { toast('Error',e.message||'Could not update.','danger'); }
+});
+
+// Reset demo data
+document.getElementById('btn-reset').addEventListener('click',()=>{
+  if (confirm('Reset all demo data to defaults?')) {
+    store.resetToDefaultData();
+    renderWardenHome();
+    toast('Reset!','Demo data restored.','success');
+  }
+});
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay=>{
+  overlay.addEventListener('click',e=>{ if(e.target===overlay) overlay.classList.remove('open'); });
+});
+
+// ----------------------------------------------------------------
+// AUTO-LOGIN: check if session exists
+// ----------------------------------------------------------------
+(function() {
+  const user = store.currentUser;
+  if (user) {
+    if (user.role==='student') loginStudent(user);
+    else if (user.role==='warden') loginWarden(user);
+  }
+})();
+</script>
 </body>
 </html>
